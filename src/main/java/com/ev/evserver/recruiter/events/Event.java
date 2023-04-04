@@ -1,9 +1,6 @@
 package com.ev.evserver.recruiter.events;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,28 +12,29 @@ import java.sql.Date;
 @Table(name = "event")
 public class Event {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "startDate")
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "endDate")
+    @Column(name = "end_date", nullable = false)
     private Date endDate;
 
-    @Column(name = "maxUsers")
+    @Column(name = "max_users", nullable = false)
     private Integer maxUsers;
 
-    @Column(name = "duration")
+    @Column(name = "duration", nullable = false)
     private Float duration;
 
-    @Column(name = "breakTime")
+    @Column(name = "break_time", nullable = false)
     private Float breakTime;
 
     public Event() {
