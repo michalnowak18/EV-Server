@@ -1,9 +1,9 @@
 package com.ev.evserver.recruiter.events;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.sql.Date;
 
 @Getter
@@ -13,28 +13,35 @@ import java.sql.Date;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @NotNull
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "start_date", nullable = false)
+    @NotNull
+    @Column(name = "start_date")
     private Date startDate;
 
-    @Column(name = "end_date", nullable = false)
+    @NotNull
+    @Column(name = "end_date")
     private Date endDate;
 
-    @Column(name = "max_users", nullable = false)
+    @NotNull
+    @Column(name = "max_users")
     private Integer maxUsers;
 
-    @Column(name = "duration", nullable = false)
+    @NotNull
+    @Column(name = "duration")
     private Float duration;
 
-    @Column(name = "break_time", nullable = false)
+    @NotNull
+    @Column(name = "break_time")
     private Float breakTime;
 
     public Event() {
