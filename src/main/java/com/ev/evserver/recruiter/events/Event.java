@@ -13,34 +13,33 @@ import java.sql.Date;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name = "id")
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Podaj nazwę wydarzenia")
     @Column(name = "name")
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @NotNull
+    @NotNull(message = "Podaj datę rozpoczęcia")
     @Column(name = "start_date")
     private Date startDate;
 
-    @NotNull
+    @NotNull(message = "Podaj datę zakończenia")
     @Column(name = "end_date")
     private Date endDate;
 
-    @NotNull
+    @NotNull(message = "Podaj maksymalną liczbę uczestników")
     @Column(name = "max_users")
     private Integer maxUsers;
 
-    @NotNull
+    @NotNull(message = "Podaj długość spotkania")
     @Column(name = "duration")
     private Float duration;
 
-    @NotNull
+    @NotNull(message = "Podaj długość przerwy")
     @Column(name = "break_time")
     private Float breakTime;
 
