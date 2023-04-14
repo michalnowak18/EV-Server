@@ -1,24 +1,28 @@
 package com.ev.evserver.recruiter.events;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/events")
 public class EventsController {
 
 	@Autowired
-	EventRepository eventRepository;
+	EventsSerivce eventsSerivce;
 
 	@GetMapping
 	public List<Event> getAll() {
-		return eventRepository.findAll();
+		return eventsSerivce.getAllEvents();
 	}
 
 	@PostMapping
-	public Event save(@RequestBody Event event) {
-		return eventRepository.save(event);
+	public ResponseEntity<Event> save(@Valid @RequestBody Event event) {
+		return new ResponseEntity<>(eventsSerivce.saveEvent(event), HttpStatus.OK);
 	}
 }
