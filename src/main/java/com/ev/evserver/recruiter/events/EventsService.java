@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class EventsSerivce {
+public class EventsService {
 
 	@Autowired
 	EventRepository eventRepository;

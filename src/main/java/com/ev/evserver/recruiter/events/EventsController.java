@@ -16,15 +16,15 @@ produces = MediaType.APPLICATION_JSON_VALUE)
 public class EventsController {
 
 	@Autowired
-	EventsSerivce eventsSerivce;
+	EventsService eventsService;
 
 	@GetMapping
 	public List<Event> getAll() {
-		return eventsSerivce.getAllEvents();
+		return eventsService.getAllEvents();
 	}
 
 	@PostMapping
 	public ResponseEntity<Event> save(@Valid @RequestBody Event event) {
-		return new ResponseEntity<>(eventsSerivce.saveEvent(event), HttpStatus.OK);
+		return new ResponseEntity<>(eventsService.saveEvent(event), HttpStatus.OK);
 	}
 }
