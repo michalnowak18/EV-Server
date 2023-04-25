@@ -40,8 +40,8 @@ public class Event {
     @Column(name = "survey_break_time ")
     private Float surveyBreakTime;
 
-    @Column(name = "slots_taken", columnDefinition = "integer default 0")
-    private Integer slotsTaken;
+    @Column(name = "slots_taken")
+    private Integer slotsTaken = 0;
 
     @NotNull(message = "Podaj datę rozpoczęcia badań")
     @Column(name = "research_start_date")
