@@ -3,6 +3,7 @@ package com.ev.evserver.recruiter.surveys;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Date;
 
 @Getter
@@ -22,5 +23,9 @@ public class Survey {
     private Date date;
 
     public Survey() {
+    }
+
+    public Survey(String code) {
+        this.code = code;
     }
 }
