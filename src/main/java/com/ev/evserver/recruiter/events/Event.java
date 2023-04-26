@@ -1,5 +1,6 @@
 package com.ev.evserver.recruiter.events;
 
+import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,5 +53,30 @@ public class Event {
     private Date researchEndDate;
 
     public Event() {
+    }
+
+    public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration, Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
+        this.name = name;
+        this.description = description;
+        this.endDate = endDate;
+        this.maxUsers = maxUsers;
+        this.surveyDuration = surveyDuration;
+        this.surveyBreakTime = surveyBreakTime;
+        this.slotsTaken = slotsTaken;
+        this.researchStartDate = researchStartDate;
+        this.researchEndDate = researchEndDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equal(id, event.id) && Objects.equal(name, event.name) && Objects.equal(description, event.description) && Objects.equal(endDate, event.endDate) && Objects.equal(maxUsers, event.maxUsers) && Objects.equal(surveyDuration, event.surveyDuration) && Objects.equal(surveyBreakTime, event.surveyBreakTime) && Objects.equal(slotsTaken, event.slotsTaken) && Objects.equal(researchStartDate, event.researchStartDate) && Objects.equal(researchEndDate, event.researchEndDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, description, endDate, maxUsers, surveyDuration, surveyBreakTime, slotsTaken, researchStartDate, researchEndDate);
     }
 }
