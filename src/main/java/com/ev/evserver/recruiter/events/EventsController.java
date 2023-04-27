@@ -15,10 +15,6 @@ consumes = MediaType.APPLICATION_JSON_VALUE,
 produces = MediaType.APPLICATION_JSON_VALUE)
 public class EventsController {
 
-//	@Autowired
-//	EventsService eventsService;
-
-	// recommended using constructor - to be decided
 	private final EventsService eventsService;
 
 	@Autowired

@@ -1,18 +1,22 @@
 package com.ev.evserver.recruiter.surveys;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Component
+@Service
 public class SurveysService {
 
+	private final SurveyRepository surveyRepository;
+
 	@Autowired
-	SurveyRepository surveyRepository;
+	public SurveysService(SurveyRepository surveyRepository) {
+		this.surveyRepository = surveyRepository;
+	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots) {
 

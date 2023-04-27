@@ -9,11 +9,15 @@ import java.util.List;
 @Component
 public class EventsService {
 
-	@Autowired
-	EventRepository eventRepository;
+	private final EventRepository eventRepository;
+
+	private final SurveysService surveysService;
 
 	@Autowired
-	SurveysService surveysService;
+	public EventsService(EventRepository eventRepository, SurveysService surveysService) {
+		this.eventRepository = eventRepository;
+		this.surveysService = surveysService;
+	}
 
 	public List<Event> getAllEvents() {
 		return eventRepository.findAll();
