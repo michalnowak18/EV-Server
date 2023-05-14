@@ -1,5 +1,6 @@
 package com.ev.evserver.recruiter.events;
 
+import com.ev.evserver.recruiter.availability.Availability;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.sql.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -51,6 +53,9 @@ public class Event {
     @NotNull(message = "Podaj datę zakończenia badań")
     @Column(name = "research_end_date")
     private Date researchEndDate;
+
+    @OneToMany(mappedBy = "eventId")
+    private Set<Availability> availabilities;
 
     public Event() {
     }
