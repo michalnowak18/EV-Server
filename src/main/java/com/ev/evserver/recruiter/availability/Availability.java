@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Timestamp;
 
 @Getter
@@ -25,10 +26,15 @@ public class Availability {
     @Column(name = "end_date")
     private Timestamp endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event eventId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_event", nullable = false)
+    private Event event;
 
     public Availability() {
+    }
+
+    public Availability(AvailabilityDto availabilityDto) {
+        this.startDate = availabilityDto.getStartDate();
+        this.endDate = availabilityDto.getEndDate();
     }
 }

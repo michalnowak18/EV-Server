@@ -23,12 +23,12 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public List<Event> getAll() {
+	public List<EventDto> getAll() {
 		return eventsService.getAllEvents();
 	}
 
 	@PostMapping
-	public ResponseEntity<Event> save(@Valid @RequestBody Event event) {
-		return new ResponseEntity<>(eventsService.saveEvent(event), HttpStatus.OK);
+	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto) {
+		return new ResponseEntity<>(eventsService.saveEvent(eventDto), HttpStatus.OK);
 	}
 }

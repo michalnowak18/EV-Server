@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EventsService {
@@ -19,12 +20,19 @@ public class EventsService {
 		this.surveysService = surveysService;
 	}
 
-	public List<Event> getAllEvents() {
-		return eventRepository.findAll();
+	public List<EventDto> getAllEvents() {
+
+		List<Event> eventList = eventRepository.findAll();
+		List<EventDto> eventDtoList = eventList.stream().map(event -> new EventDto(event)).collect(Collectors.toList());
+
+		return eventDtoList;
 	}
 
-	public Event saveEvent(Event event) {
+	public EventDto saveEvent(EventDto eventDto) {
+
+		Event event = new Event(eventDto);
 		surveysService.saveSurveyWithGeneratedSlots(event.getMaxUsers());
-		return eventRepository.save(event);
+
+		return new EventDto(eventRepository.save(event));
 	}
 }
