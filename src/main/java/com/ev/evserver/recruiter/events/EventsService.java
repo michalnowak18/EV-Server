@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,6 +27,21 @@ public class EventsService {
 		List<EventDto> eventDtoList = eventList.stream().map(event -> new EventDto(event)).collect(Collectors.toList());
 
 		return eventDtoList;
+	}
+
+	public EventDto getEvent(long id) {
+
+		Event event = fetchValidEvent(id);
+		return new EventDto(event);
+	}
+
+	public Event fetchValidEvent(long id) {
+		Optional<Event> eventOpt = eventRepository.findById(id);
+		if (eventOpt.isEmpty()) {
+			throw new RuntimeException("Invalid ID");
+		}
+
+		return eventOpt.get();
 	}
 
 	public EventDto saveEvent(EventDto eventDto) {

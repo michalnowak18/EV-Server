@@ -27,6 +27,11 @@ public class EventsController {
 		return eventsService.getAllEvents();
 	}
 
+	@GetMapping(path = "/{id}")
+	public EventDto get(@PathVariable int id) {
+		return eventsService.getEvent(id);
+	}
+
 	@PostMapping
 	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto) {
 		return new ResponseEntity<>(eventsService.saveEvent(eventDto), HttpStatus.OK);
