@@ -23,13 +23,13 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public List<EventDto> getAll() {
-		return eventsService.getAllEvents();
+	public ResponseEntity<List<EventDto>> getAll() {
+		return new ResponseEntity<>(eventsService.getAllEvents(), HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/{id}")
-	public EventDto get(@PathVariable int id) {
-		return eventsService.getEvent(id);
+	public ResponseEntity<EventDto> get(@PathVariable int id) {
+		return new ResponseEntity<>(eventsService.getEvent(id), HttpStatus.OK);
 	}
 
 	@PostMapping

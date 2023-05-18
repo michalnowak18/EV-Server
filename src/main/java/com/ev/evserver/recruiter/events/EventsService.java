@@ -24,7 +24,7 @@ public class EventsService {
 	public List<EventDto> getAllEvents() {
 
 		List<Event> eventList = eventRepository.findAll();
-		List<EventDto> eventDtoList = eventList.stream().map(event -> new EventDto(event)).collect(Collectors.toList());
+		List<EventDto> eventDtoList = eventList.stream().map(EventDto::new).collect(Collectors.toList());
 
 		return eventDtoList;
 	}
