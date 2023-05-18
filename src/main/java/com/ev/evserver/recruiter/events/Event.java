@@ -54,13 +54,14 @@ public class Event {
     @Column(name = "research_end_date")
     private Date researchEndDate;
 
-    @OneToMany(mappedBy = "eventId")
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Availability> availabilities;
 
     public Event() {
     }
 
-    public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration, Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
+    public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration,
+                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
         this.name = name;
         this.description = description;
         this.endDate = endDate;
@@ -72,16 +73,38 @@ public class Event {
         this.researchEndDate = researchEndDate;
     }
 
+    public Event(EventDto eventDto) {
+        this.id = eventDto.getId();
+        this.name = eventDto.getName();
+        this.description = eventDto.getDescription();
+        this.endDate = eventDto.getEndDate();
+        this.maxUsers = eventDto.getMaxUsers();
+        this.surveyDuration = eventDto.getSurveyDuration();
+        this.surveyBreakTime = eventDto.getSurveyBreakTime();
+        this.researchStartDate = eventDto.getResearchStartDate();
+        this.researchEndDate = eventDto.getResearchEndDate();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equal(id, event.id) && Objects.equal(name, event.name) && Objects.equal(description, event.description) && Objects.equal(endDate, event.endDate) && Objects.equal(maxUsers, event.maxUsers) && Objects.equal(surveyDuration, event.surveyDuration) && Objects.equal(surveyBreakTime, event.surveyBreakTime) && Objects.equal(slotsTaken, event.slotsTaken) && Objects.equal(researchStartDate, event.researchStartDate) && Objects.equal(researchEndDate, event.researchEndDate);
+        return Objects.equal(id, event.id) &&
+            Objects.equal(name, event.name) &&
+            Objects.equal(description, event.description) &&
+            Objects.equal(endDate, event.endDate) &&
+            Objects.equal(maxUsers, event.maxUsers) &&
+            Objects.equal(surveyDuration, event.surveyDuration) &&
+            Objects.equal(surveyBreakTime, event.surveyBreakTime) &&
+            Objects.equal(slotsTaken, event.slotsTaken) &&
+            Objects.equal(researchStartDate, event.researchStartDate) &&
+            Objects.equal(researchEndDate, event.researchEndDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, description, endDate, maxUsers, surveyDuration, surveyBreakTime, slotsTaken, researchStartDate, researchEndDate);
+        return Objects.hashCode(id, name, description, endDate, maxUsers, surveyDuration, surveyBreakTime, slotsTaken,
+            researchStartDate, researchEndDate);
     }
 }
