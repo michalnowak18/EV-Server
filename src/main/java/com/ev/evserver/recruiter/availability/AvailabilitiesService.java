@@ -33,8 +33,8 @@ public class AvailabilitiesService {
 	private List<AvailabilityDto> saveAll(List<AvailabilityDto> availabilityDtoList, Event event) {
 
 		return availabilityDtoList.stream()
-			.map(availabilityDto -> saveAvailability(availabilityDto, event))
-			.collect(Collectors.toList());
+				.map(availabilityDto -> saveAvailability(availabilityDto, event))
+				.collect(Collectors.toList());
 	}
 
 	private AvailabilityDto saveAvailability(@Valid AvailabilityDto availabilityDto, Event event) {
@@ -55,6 +55,14 @@ public class AvailabilitiesService {
 		}
 
 		return eventOpt.get();
+	}
+
+	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Long eventId) {
+
+		Event retrievedEvent = getValidEvent(eventId);
+		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
+
+		return saveAvailabilityList(availabilityDtoList, eventId);
 	}
 
 }
