@@ -57,15 +57,12 @@ public class AvailabilitiesService {
 		return eventOpt.get();
 	}
 
-	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Event event) {
+	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Long eventId) {
 
-		Event retrievedEvent = eventRepository.findById(event.getId()).get();
+		Event retrievedEvent = getValidEvent(eventId);
+		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
-		for (Availability availability:availabilityRepository.findByEvent(retrievedEvent)) {
-			availabilityRepository.delete(availability);
-		}
-
-		return saveAvailabilityList(availabilityDtoList, retrievedEvent.getId());
+		return saveAvailabilityList(availabilityDtoList, eventId);
 	}
 
 }
