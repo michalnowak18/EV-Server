@@ -1,6 +1,7 @@
 package com.ev.evserver.recruiter.events;
 
 import com.ev.evserver.recruiter.availability.Availability;
+import com.ev.evserver.recruiter.surveys.Survey;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -56,6 +57,9 @@ public class Event {
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Availability> availabilities;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private Set<Survey> surveys;
 
     public Event() {
     }

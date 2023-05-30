@@ -1,5 +1,6 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.recruiter.events.Event;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,10 @@ public class Survey {
 
     @Column(name = "date")
     private Date date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_event", nullable = false)
+    private Event event;
 
     public Survey() {
     }
