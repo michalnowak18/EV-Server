@@ -13,6 +13,8 @@ public class SurveyDto {
 
     private Date date;
 
+    private Long eventId;
+
     public SurveyDto() {
     }
 
