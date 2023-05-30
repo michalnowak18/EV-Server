@@ -33,4 +33,11 @@ public class AvailabilitiesController {
 
 		return new ResponseEntity<>(availabilitiesService.saveAvailabilityList(availabilityDtoList, eventId), HttpStatus.OK);
 	}
+
+	@PatchMapping
+	public ResponseEntity<List<AvailabilityDto>> updateAvailabilities(@RequestBody @Valid ValidList<AvailabilityDto> availabilityDtoList,
+																	  @PathVariable Long eventId) {
+
+		return new ResponseEntity<>(availabilitiesService.modifyAvailability(availabilityDtoList,eventId), HttpStatus.OK);
+	}
 }
