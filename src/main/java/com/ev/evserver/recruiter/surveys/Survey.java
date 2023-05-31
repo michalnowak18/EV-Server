@@ -30,7 +30,15 @@ public class Survey {
     public Survey() {
     }
 
-    public Survey(String code) {
+    public Survey(String code, Event event) {
         this.code = code;
+        this.event = event;
     }
+
+    public Survey(SurveyDto surveyDto) {
+        this.id = surveyDto.getId();
+        this.code = surveyDto.getCode();
+        this.date = surveyDto.getDate();
+    }
+
 }

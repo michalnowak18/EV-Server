@@ -22,5 +22,6 @@ public class SurveyDto {
         this.id = survey.getId();
         this.code = survey.getCode();
         this.date = survey.getDate();
+        this.eventId = survey.getEvent().getId();
     }
 }
