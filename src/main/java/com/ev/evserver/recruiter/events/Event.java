@@ -85,6 +85,7 @@ public class Event {
         this.maxUsers = eventDto.getMaxUsers();
         this.surveyDuration = eventDto.getSurveyDuration();
         this.surveyBreakTime = eventDto.getSurveyBreakTime();
+        this.slotsTaken = eventDto.getSlotsTaken();
         this.researchStartDate = eventDto.getResearchStartDate();
         this.researchEndDate = eventDto.getResearchEndDate();
     }

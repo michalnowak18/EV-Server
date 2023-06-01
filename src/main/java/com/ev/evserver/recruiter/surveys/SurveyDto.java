@@ -2,7 +2,7 @@ package com.ev.evserver.recruiter.surveys;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 public class SurveyDto {
@@ -11,7 +11,7 @@ public class SurveyDto {
 
     private String code;
 
-    private Date date;
+    private Timestamp date;
 
     private Long eventId;
 
