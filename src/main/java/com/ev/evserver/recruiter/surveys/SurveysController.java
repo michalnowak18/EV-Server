@@ -38,7 +38,7 @@ public class SurveysController {
         SurveyDto newSurveyDto = surveysService.modifySurvey(id, surveyDto);
 
         if (newSurveyDto != null) {
-            return new ResponseEntity<>(surveyDto, HttpStatus.OK);
+            return new ResponseEntity<>(newSurveyDto, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

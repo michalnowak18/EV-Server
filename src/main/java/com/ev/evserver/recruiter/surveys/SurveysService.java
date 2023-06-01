@@ -62,10 +62,10 @@ public class SurveysService {
 		}
 
 		survey.setDate(newSurvey.getDate());
-		SurveyDto surveyDtoNew = new SurveyDto(surveyRepository.save(survey));
+		SurveyDto newSurveyDto = new SurveyDto(surveyRepository.save(survey));
 		event.setSlotsTaken(event.getSlotsTaken() + 1);
 		eventRepository.save(event);
 
-		return surveyDtoNew;
+		return newSurveyDto;
 	}
 }
