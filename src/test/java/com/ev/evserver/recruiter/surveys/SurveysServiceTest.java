@@ -45,7 +45,7 @@ public class SurveysServiceTest {
 				.thenReturn(CODES_DUPLICATES)
 				.thenReturn(CODES_UNIQUE);
 
-			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS);
+			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS, Mockito.any());
 		}
 
 		List<String> codesActual = surveys.stream().map(Survey::getCode).collect(Collectors.toList());
@@ -62,7 +62,7 @@ public class SurveysServiceTest {
 			.thenReturn(CODES_UNIQUE)
 			.thenReturn(CODES_DUPLICATES);
 
-			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS);
+			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS, Mockito.any());
 		}
 
 		List<String> codesActual = surveys.stream().map(Survey::getCode).collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class SurveysServiceTest {
 			utils.when(() -> SurveysUtils.generateCodes(NUMBER_OF_SLOTS))
 			.thenReturn(CODES_UNIQUE);
 
-			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS);
+			surveys = surveysService.generateSlots(NUMBER_OF_SLOTS, Mockito.any());
 		}
 
 		Assertions.assertEquals(NUMBER_OF_SLOTS, surveys.size());

@@ -47,8 +47,14 @@ public class EventsService {
 	public EventDto saveEvent(EventDto eventDto) {
 
 		Event event = new Event(eventDto);
-		surveysService.saveSurveyWithGeneratedSlots(event.getMaxUsers());
 
-		return new EventDto(eventRepository.save(event));
+		Event savedEvent = eventRepository.save(event);
+
+		if (savedEvent != null) {
+			surveysService.saveSurveyWithGeneratedSlots(event.getMaxUsers(), savedEvent);
+			return new EventDto(savedEvent);
+		}
+
+		return null;
 	}
 }
