@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -21,7 +21,7 @@ public class Survey {
     private String code;
 
     @Column(name = "date")
-    private Date date;
+    private Timestamp date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_event", nullable = false)
@@ -30,7 +30,15 @@ public class Survey {
     public Survey() {
     }
 
-    public Survey(String code) {
+    public Survey(String code, Event event) {
         this.code = code;
+        this.event = event;
     }
+
+    public Survey(SurveyDto surveyDto) {
+        this.id = surveyDto.getId();
+        this.code = surveyDto.getCode();
+        this.date = surveyDto.getDate();
+    }
+
 }

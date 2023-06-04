@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
 
+    Survey findByCode(String code);
+
 }
