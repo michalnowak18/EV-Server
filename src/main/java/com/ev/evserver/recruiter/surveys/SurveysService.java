@@ -70,10 +70,19 @@ public class SurveysService {
 			return null;
 		}
 
-		survey.setDate(newSurvey.getDate());
+		if (newSurvey.getDate() != null) {
+			if (survey.getDate() == null) {
+				event.setSlotsTaken(event.getSlotsTaken() + 1);
+				eventRepository.save(event);
+			}
+			survey.setDate(newSurvey.getDate());
+		}
+
+		if (newSurvey.getSurveyState() != SurveyState.UNDEFINED) {
+			survey.setSurveyState(newSurvey.getSurveyState());
+		}
+
 		SurveyDto newSurveyDto = new SurveyDto(surveyRepository.save(survey));
-		event.setSlotsTaken(event.getSlotsTaken() + 1);
-		eventRepository.save(event);
 
 		return newSurveyDto;
 	}
