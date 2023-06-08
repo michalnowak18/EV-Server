@@ -1,13 +1,12 @@
 package com.ev.evserver.recruiter.availability;
 
 import com.ev.evserver.recruiter.events.Event;
-import com.ev.evserver.recruiter.events.EventRepository;
+import com.ev.evserver.recruiter.events.EventsUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,24 +15,24 @@ public class AvailabilitiesService {
 
 	private final AvailabilityRepository availabilityRepository;
 
-	private final EventRepository eventRepository;
+	private final EventsUtils eventsUtils;
 
 	@Autowired
-	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventRepository eventRepository) {
+	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils) {
 		this.availabilityRepository = availabilityRepository;
-		this.eventRepository = eventRepository;
+		this.eventsUtils = eventsUtils;
 	}
 
 	public List<AvailabilityDto> saveAvailabilityList(List<AvailabilityDto> availabilityDtoList, long eventId) {
 
-		Event event = getValidEvent(eventId);
+		Event event = eventsUtils.fetchValidEvent(eventId);
 
 		return saveAll(availabilityDtoList, event);
 	}
 
 	public List<AvailabilityDto> getAll(long eventId) {
 
-		Event event = getValidEvent(eventId);
+		Event event = eventsUtils.fetchValidEvent(eventId);
 		Set<Availability> availabilities = availabilityRepository.findByEvent(event);
 		List<AvailabilityDto> availabilityDtoList = availabilities
 			.stream()
@@ -60,19 +59,9 @@ public class AvailabilitiesService {
 		return new AvailabilityDto(availabilityRepository.save(availability));
 	}
 
-	private Event getValidEvent(long eventId) {
-
-		Optional<Event> eventOpt = eventRepository.findById(eventId);
-		if (!eventOpt.isPresent()) {
-			throw new RuntimeException("Invalid ID");
-		}
-
-		return eventOpt.get();
-	}
-
 	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Long eventId) {
 
-		Event retrievedEvent = getValidEvent(eventId);
+		Event retrievedEvent = eventsUtils.fetchValidEvent(eventId);
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
 		return saveAvailabilityList(availabilityDtoList, eventId);
