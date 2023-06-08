@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,10 +14,14 @@ public class EventsService {
 
 	private final SurveysService surveysService;
 
+	private final EventsUtils eventsUtils;
+
 	@Autowired
-	public EventsService(EventRepository eventRepository, SurveysService surveysService) {
+	public EventsService(EventRepository eventRepository, SurveysService surveysService,
+						 EventsUtils eventsUtils) {
 		this.eventRepository = eventRepository;
 		this.surveysService = surveysService;
+		this.eventsUtils = eventsUtils;
 	}
 
 	public List<EventDto> getAllEvents() {
@@ -31,17 +34,8 @@ public class EventsService {
 
 	public EventDto getEvent(long id) {
 
-		Event event = fetchValidEvent(id);
+		Event event = eventsUtils.fetchValidEvent(id);
 		return new EventDto(event);
-	}
-
-	public Event fetchValidEvent(long id) {
-		Optional<Event> eventOpt = eventRepository.findById(id);
-		if (eventOpt.isEmpty()) {
-			throw new RuntimeException("Invalid ID");
-		}
-
-		return eventOpt.get();
 	}
 
 	public EventDto saveEvent(EventDto eventDto) {

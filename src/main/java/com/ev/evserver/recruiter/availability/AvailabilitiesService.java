@@ -1,14 +1,12 @@
 package com.ev.evserver.recruiter.availability;
 
 import com.ev.evserver.recruiter.events.Event;
-import com.ev.evserver.recruiter.events.EventRepository;
-import com.ev.evserver.recruiter.events.EventsService;
+import com.ev.evserver.recruiter.events.EventsUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,24 +15,24 @@ public class AvailabilitiesService {
 
 	private final AvailabilityRepository availabilityRepository;
 
-	private final EventsService eventsService;
+	private final EventsUtils eventsUtils;
 
 	@Autowired
-	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsService eventsService) {
+	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils) {
 		this.availabilityRepository = availabilityRepository;
-		this.eventsService = eventsService;
+		this.eventsUtils = eventsUtils;
 	}
 
 	public List<AvailabilityDto> saveAvailabilityList(List<AvailabilityDto> availabilityDtoList, long eventId) {
 
-		Event event = eventsService.fetchValidEvent(eventId);
+		Event event = eventsUtils.fetchValidEvent(eventId);
 
 		return saveAll(availabilityDtoList, event);
 	}
 
 	public List<AvailabilityDto> getAll(long eventId) {
 
-		Event event = eventsService.fetchValidEvent(eventId);
+		Event event = eventsUtils.fetchValidEvent(eventId);
 		Set<Availability> availabilities = availabilityRepository.findByEvent(event);
 		List<AvailabilityDto> availabilityDtoList = availabilities
 			.stream()
@@ -63,7 +61,7 @@ public class AvailabilitiesService {
 
 	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Long eventId) {
 
-		Event retrievedEvent = eventsService.fetchValidEvent(eventId);
+		Event retrievedEvent = eventsUtils.fetchValidEvent(eventId);
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
 		return saveAvailabilityList(availabilityDtoList, eventId);
