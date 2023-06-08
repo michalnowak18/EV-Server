@@ -1,11 +1,15 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.recruiter.availability.Availability;
+import com.ev.evserver.recruiter.availability.AvailabilityDto;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
+import com.ev.evserver.recruiter.events.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SurveysService {
@@ -14,10 +18,14 @@ public class SurveysService {
 
 	private final EventRepository eventRepository;
 
+	private final EventsService eventsService;
+
 	@Autowired
-	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository) {
+	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository,
+						  EventsService eventsService) {
 		this.surveyRepository = surveyRepository;
 		this.eventRepository = eventRepository;
+		this.eventsService = eventsService;
 	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots, Event event) {
@@ -68,4 +76,17 @@ public class SurveysService {
 
 		return newSurveyDto;
 	}
+
+	public List<SurveyDto> findByEvent(long eventId) {
+
+		Event event = eventsService.fetchValidEvent(eventId);
+		Set<Survey> surveys = surveyRepository.findByEvent(event);
+		List<SurveyDto> surveyDtoList = surveys
+				.stream()
+				.map(SurveyDto::new)
+				.collect(Collectors.toList());
+
+		return surveyDtoList;
+	}
+
 }
