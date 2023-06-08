@@ -19,7 +19,7 @@ public class EvServerApplication {
 
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST")
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PATCH")
 				.allowedHeaders("Content-Type");
 			}
 		};

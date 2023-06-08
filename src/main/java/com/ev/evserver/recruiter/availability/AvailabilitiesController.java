@@ -22,10 +22,22 @@ public class AvailabilitiesController {
 		this.availabilitiesService = availabilitiesService;
 	}
 
+	@GetMapping
+	public ResponseEntity<List<AvailabilityDto>> getAll(@PathVariable Long eventId) {
+		return new ResponseEntity<>(availabilitiesService.getAll(eventId), HttpStatus.OK);
+	}
+
 	@PostMapping
 	public ResponseEntity<List<AvailabilityDto>> saveAll(@RequestBody @Valid ValidList<AvailabilityDto> availabilityDtoList,
 														 @PathVariable Long eventId) {
 
 		return new ResponseEntity<>(availabilitiesService.saveAvailabilityList(availabilityDtoList, eventId), HttpStatus.OK);
+	}
+
+	@PatchMapping
+	public ResponseEntity<List<AvailabilityDto>> updateAvailabilities(@RequestBody @Valid ValidList<AvailabilityDto> availabilityDtoList,
+																	  @PathVariable Long eventId) {
+
+		return new ResponseEntity<>(availabilitiesService.modifyAvailability(availabilityDtoList,eventId), HttpStatus.OK);
 	}
 }

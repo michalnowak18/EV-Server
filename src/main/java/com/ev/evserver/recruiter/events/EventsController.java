@@ -23,12 +23,24 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public List<EventDto> getAll() {
-		return eventsService.getAllEvents();
+	public ResponseEntity<List<EventDto>> getAll() {
+		return new ResponseEntity<>(eventsService.getAllEvents(), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<EventDto> get(@PathVariable int id) {
+		return new ResponseEntity<>(eventsService.getEvent(id), HttpStatus.OK);
 	}
 
 	@PostMapping
 	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto) {
-		return new ResponseEntity<>(eventsService.saveEvent(eventDto), HttpStatus.OK);
+
+		EventDto newEventDto = eventsService.saveEvent(eventDto);
+
+		if (newEventDto != null) {
+			return new ResponseEntity<>(newEventDto, HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 }
