@@ -2,10 +2,13 @@ package com.ev.evserver.recruiter.surveys;
 
 import com.ev.evserver.recruiter.events.Event;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+
+import static com.ev.evserver.recruiter.surveys.SurveyState.UNDEFINED;
 
 @Getter
 @Setter
@@ -23,6 +26,10 @@ public class Survey {
     @Column(name = "date")
     private Timestamp date;
 
+    @NotNull
+    @Column(name = "survey_state")
+    private SurveyState surveyState = UNDEFINED;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_event", nullable = false)
     private Event event;
@@ -39,6 +46,7 @@ public class Survey {
         this.id = surveyDto.getId();
         this.code = surveyDto.getCode();
         this.date = surveyDto.getDate();
+        this.surveyState = surveyDto.getSurveyState();
     }
 
 }
