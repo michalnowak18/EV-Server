@@ -1,5 +1,7 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.recruiter.events.Event;
+import com.ev.evserver.recruiter.events.EventsUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ public class SurveysController {
 
     private final SurveysService surveysService;
 
+    private final EventsUtils eventsUtils;
     @Autowired
-    public SurveysController(SurveysService surveysService) {
+    public SurveysController(SurveysService surveysService, EventsUtils eventsUtils) {
         this.surveysService = surveysService;
+        this.eventsUtils = eventsUtils;
     }
 
     @GetMapping("/surveys/{code}")
@@ -54,5 +58,16 @@ public class SurveysController {
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/events/{eventId}/surveys")
+    public ResponseEntity<SurveyDto> generateSurvey(@PathVariable Long eventId) {
+
+        Event event = eventsUtils.fetchValidEvent(eventId);
+        List<Survey> survey = surveysService.saveSurveyWithGeneratedSlots(1, event);
+
+        SurveyDto surveyDto = new SurveyDto(survey.get(0));
+
+        return new ResponseEntity<>(surveyDto, HttpStatus.OK);
     }
 }
