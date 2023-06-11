@@ -1,8 +1,7 @@
 package com.ev.evserver.recruiter.surveys;
 
 enum SurveyState {
-    UNDEFINED,
-    ACTIVE,
-    EXPIRED,
+    UNUSED,
+    USED,
     INACTIVE;
 }

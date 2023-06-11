@@ -78,7 +78,7 @@ public class SurveysService {
 			survey.setDate(newSurvey.getDate());
 		}
 
-		if (newSurvey.getSurveyState() != SurveyState.UNDEFINED) {
+		if (newSurvey.getSurveyState() != SurveyState.UNUSED) {
 			survey.setSurveyState(newSurvey.getSurveyState());
 		}
 
