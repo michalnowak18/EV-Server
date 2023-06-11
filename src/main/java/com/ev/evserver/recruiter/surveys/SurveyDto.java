@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
-import static com.ev.evserver.recruiter.surveys.SurveyState.UNDEFINED;
+import static com.ev.evserver.recruiter.surveys.SurveyState.UNUSED;
 
 @Data
 public class SurveyDto {
@@ -21,7 +21,7 @@ public class SurveyDto {
 
     @NotNull
     @Column(name = "survey_state")
-    private SurveyState surveyState = UNDEFINED;
+    private SurveyState surveyState = UNUSED;
 
     public SurveyDto() {
     }

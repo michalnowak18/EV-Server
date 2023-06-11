@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-import static com.ev.evserver.recruiter.surveys.SurveyState.UNDEFINED;
+import static com.ev.evserver.recruiter.surveys.SurveyState.UNUSED;
 
 @Getter
 @Setter
@@ -28,7 +28,7 @@ public class Survey {
 
     @NotNull
     @Column(name = "survey_state")
-    private SurveyState surveyState = UNDEFINED;
+    private SurveyState surveyState = UNUSED;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_event", nullable = false)
