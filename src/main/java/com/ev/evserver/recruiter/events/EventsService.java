@@ -51,4 +51,18 @@ public class EventsService {
 
 		return null;
 	}
+
+	public EventDto modifyEvent(EventDto eventDto, Long id) {
+
+		Event event = eventsUtils.fetchValidEvent(id);
+		Event newEvent = new Event(eventDto);
+
+		if(event.isActive() && !newEvent.isActive()) {
+			event.setActive(newEvent.isActive());
+		}
+
+		Event savedEvent = eventRepository.save(event);
+
+		return new EventDto(savedEvent);
+	}
 }

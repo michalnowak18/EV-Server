@@ -20,6 +20,7 @@ public class SurveysController {
     private final SurveysService surveysService;
 
     private final EventsUtils eventsUtils;
+
     @Autowired
     public SurveysController(SurveysService surveysService, EventsUtils eventsUtils) {
         this.surveysService = surveysService;

@@ -36,6 +36,8 @@ public class EventDto {
 	@NotNull(message = "Podaj datę zakończenia badań")
 	private Date researchEndDate;
 
+	private boolean isActive = true;
+
 	public EventDto() {
 	}
 
@@ -50,5 +52,6 @@ public class EventDto {
 		this.slotsTaken = event.getSlotsTaken();
 		this.researchStartDate = event.getResearchStartDate();
 		this.researchEndDate = event.getResearchEndDate();
+		this.isActive = event.isActive();
 	}
 }

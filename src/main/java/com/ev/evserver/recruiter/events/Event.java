@@ -55,6 +55,9 @@ public class Event {
     @Column(name = "research_end_date")
     private Date researchEndDate;
 
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Availability> availabilities;
 
@@ -65,7 +68,8 @@ public class Event {
     }
 
     public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration,
-                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
+                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate,
+                 boolean isActive) {
         this.name = name;
         this.description = description;
         this.endDate = endDate;
@@ -75,6 +79,7 @@ public class Event {
         this.slotsTaken = slotsTaken;
         this.researchStartDate = researchStartDate;
         this.researchEndDate = researchEndDate;
+        this.isActive = isActive;
     }
 
     public Event(EventDto eventDto) {
@@ -88,6 +93,7 @@ public class Event {
         this.slotsTaken = eventDto.getSlotsTaken();
         this.researchStartDate = eventDto.getResearchStartDate();
         this.researchEndDate = eventDto.getResearchEndDate();
+        this.isActive = eventDto.isActive();
     }
 
     @Override
@@ -104,12 +110,13 @@ public class Event {
             Objects.equal(surveyBreakTime, event.surveyBreakTime) &&
             Objects.equal(slotsTaken, event.slotsTaken) &&
             Objects.equal(researchStartDate, event.researchStartDate) &&
-            Objects.equal(researchEndDate, event.researchEndDate);
+            Objects.equal(researchEndDate, event.researchEndDate) &&
+            Objects.equal(isActive, event.isActive);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(id, name, description, endDate, maxUsers, surveyDuration, surveyBreakTime, slotsTaken,
-            researchStartDate, researchEndDate);
+            researchStartDate, researchEndDate, isActive);
     }
 }
