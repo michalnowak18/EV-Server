@@ -66,20 +66,26 @@ public class SurveysService {
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
 
-		if (event.getSlotsTaken() == event.getMaxUsers()) {
+		if (newSurvey.getDate() != null
+			&& survey.getDate() == null
+			&& !event.isFull()) {
+
+			survey.setDate(newSurvey.getDate());
+			survey.setSurveyState(SurveyState.USED);
+
+			event.setSlotsTaken(event.getSlotsTaken() + 1);
+			eventRepository.save(event);
+
+		} else if (newSurvey.getDate() != null
+		            && event.isFull()
+					&& newSurvey.getSurveyState() != SurveyState.INACTIVE) {
+
 			return null;
 		}
 
-		if (newSurvey.getDate() != null) {
-			if (survey.getDate() == null) {
-				event.setSlotsTaken(event.getSlotsTaken() + 1);
-				eventRepository.save(event);
-			}
-			survey.setDate(newSurvey.getDate());
-		}
-
-		if (newSurvey.getSurveyState() != SurveyState.UNUSED) {
+		if (newSurvey.getSurveyState() == SurveyState.INACTIVE) {
 			survey.setSurveyState(newSurvey.getSurveyState());
+			survey.setDate(null);
 		}
 
 		SurveyDto newSurveyDto = new SurveyDto(surveyRepository.save(survey));

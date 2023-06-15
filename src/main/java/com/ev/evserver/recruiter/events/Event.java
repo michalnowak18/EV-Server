@@ -96,6 +96,10 @@ public class Event {
         this.isActive = eventDto.isActive();
     }
 
+    public boolean isFull() {
+        return this.slotsTaken == this.maxUsers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
