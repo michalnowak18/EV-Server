@@ -68,8 +68,7 @@ public class Event {
     }
 
     public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration,
-                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate,
-                 boolean isActive) {
+                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
         this.name = name;
         this.description = description;
         this.endDate = endDate;
@@ -79,7 +78,6 @@ public class Event {
         this.slotsTaken = slotsTaken;
         this.researchStartDate = researchStartDate;
         this.researchEndDate = researchEndDate;
-        this.isActive = isActive;
     }
 
     public Event(EventDto eventDto) {

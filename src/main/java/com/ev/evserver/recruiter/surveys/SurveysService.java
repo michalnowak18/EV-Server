@@ -66,6 +66,7 @@ public class SurveysService {
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
 
+		//case event is new
 		if (newSurvey.getDate() != null
 			&& survey.getDate() == null
 			&& !event.isFull()) {
@@ -76,6 +77,7 @@ public class SurveysService {
 			event.setSlotsTaken(event.getSlotsTaken() + 1);
 			eventRepository.save(event);
 
+			//case event is new and is full
 		} else if (newSurvey.getDate() != null
 		            && event.isFull()
 					&& newSurvey.getSurveyState() != SurveyState.INACTIVE) {
@@ -83,7 +85,13 @@ public class SurveysService {
 			return null;
 		}
 
+		//case event is going to be deactivated
 		if (newSurvey.getSurveyState() == SurveyState.INACTIVE) {
+			if (survey.getSurveyState() == SurveyState.USED) {
+				event.setSlotsTaken(event.getSlotsTaken() - 1);
+				eventRepository.save(event);
+			}
+
 			survey.setSurveyState(newSurvey.getSurveyState());
 			survey.setDate(null);
 		}
