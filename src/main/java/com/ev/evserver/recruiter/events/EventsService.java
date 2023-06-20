@@ -58,7 +58,9 @@ public class EventsService {
 		Event newEvent = new Event(eventDto);
 
 		if(event.isActive() && !newEvent.isActive()) {
-			event.setActive(newEvent.isActive());
+			event.setActive(false);
+			event.setSlotsTaken(0);
+			surveysService.deactivateAllCodes(event);
 		}
 
 		Event savedEvent = eventRepository.save(event);
