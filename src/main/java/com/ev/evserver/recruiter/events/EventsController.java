@@ -28,7 +28,7 @@ public class EventsController {
 	}
 
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<EventDto> get(@PathVariable int id) {
+	public ResponseEntity<EventDto> get(@PathVariable Long id) {
 		return new ResponseEntity<>(eventsService.getEvent(id), HttpStatus.OK);
 	}
 
@@ -38,6 +38,19 @@ public class EventsController {
 		EventDto newEventDto = eventsService.saveEvent(eventDto);
 
 		if (newEventDto != null) {
+			return new ResponseEntity<>(newEventDto, HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
+	@PatchMapping(path = "/{id}")
+	public ResponseEntity<EventDto> modifyEvent(@Valid @RequestBody EventDto eventDto,
+												@PathVariable Long id) {
+
+		EventDto newEventDto = eventsService.modifyEvent(eventDto, id);
+
+		if(newEventDto != null) {
 			return new ResponseEntity<>(newEventDto, HttpStatus.OK);
 		}
 

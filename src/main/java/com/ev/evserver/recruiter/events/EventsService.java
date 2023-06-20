@@ -51,4 +51,20 @@ public class EventsService {
 
 		return null;
 	}
+
+	public EventDto modifyEvent(EventDto eventDto, Long id) {
+
+		Event event = eventsUtils.fetchValidEvent(id);
+		Event newEvent = new Event(eventDto);
+
+		if(event.isActive() && !newEvent.isActive()) {
+			event.setActive(false);
+			event.setSlotsTaken(0);
+			surveysService.deactivateAllCodes(event);
+		}
+
+		Event savedEvent = eventRepository.save(event);
+
+		return new EventDto(savedEvent);
+	}
 }

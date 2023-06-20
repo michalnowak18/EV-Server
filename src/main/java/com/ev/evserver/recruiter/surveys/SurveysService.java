@@ -66,25 +66,49 @@ public class SurveysService {
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
 
-		if (event.getSlotsTaken() == event.getMaxUsers()) {
+		//case survey is new
+		if (newSurvey.getDate() != null
+			&& survey.getDate() == null
+			&& !event.isFull()) {
+
+			survey.setDate(newSurvey.getDate());
+			survey.setSurveyState(SurveyState.USED);
+
+			event.setSlotsTaken(event.getSlotsTaken() + 1);
+			eventRepository.save(event);
+
+			//case survey is new and event is full
+		} else if (newSurvey.getDate() != null
+		            && event.isFull()
+					&& newSurvey.getSurveyState() != SurveyState.INACTIVE) {
+
 			return null;
 		}
 
-		if (newSurvey.getDate() != null) {
-			if (survey.getDate() == null) {
-				event.setSlotsTaken(event.getSlotsTaken() + 1);
+		//case survey is going to be deactivated
+		if (newSurvey.getSurveyState() == SurveyState.INACTIVE) {
+			if (survey.getSurveyState() == SurveyState.USED) {
+				event.setSlotsTaken(event.getSlotsTaken() - 1);
 				eventRepository.save(event);
 			}
-			survey.setDate(newSurvey.getDate());
-		}
 
-		if (newSurvey.getSurveyState() != SurveyState.UNUSED) {
 			survey.setSurveyState(newSurvey.getSurveyState());
+			survey.setDate(null);
 		}
 
 		SurveyDto newSurveyDto = new SurveyDto(surveyRepository.save(survey));
 
 		return newSurveyDto;
+	}
+
+	public void deactivateAllCodes(Event event) {
+
+		Set<Survey> surveys = surveyRepository.findByEvent(event);
+		surveys.forEach(survey -> {
+			survey.setSurveyState(SurveyState.INACTIVE);
+			survey.setDate(null);
+		});
+		surveyRepository.saveAll(surveys);
 	}
 
 	public List<SurveyDto> findByEvent(long eventId) {
