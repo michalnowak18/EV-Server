@@ -45,12 +45,18 @@ public class EventsController {
 	}
 
 	@PatchMapping(path = "/{id}")
-	public ResponseEntity<EventDto> modifyEvent(@Valid @RequestBody EventDto eventDto,
+	public ResponseEntity<Object> modifyEvent(@RequestBody EventDto eventDto,
 												@PathVariable Long id) {
 
-		EventDto newEventDto = eventsService.modifyEvent(eventDto, id);
+		EventDto newEventDto;
 
-		if(newEventDto != null) {
+		try {
+			newEventDto = eventsService.modifyEvent(eventDto, id);
+		} catch (RuntimeException exception) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+		}
+
+		if (newEventDto != null) {
 			return new ResponseEntity<>(newEventDto, HttpStatus.OK);
 		}
 
