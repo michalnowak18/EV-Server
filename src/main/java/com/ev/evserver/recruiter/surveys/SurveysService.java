@@ -129,8 +129,6 @@ public class SurveysService {
 	private boolean isHourTaken(Timestamp newSurveyDate, long eventId) {
 
 		List<SurveyDto> surveyDtoList = findByEvent(eventId);
-		System.out.println(surveyDtoList);
-		System.out.println(newSurveyDate);
 
 		return surveyDtoList
 				.stream()

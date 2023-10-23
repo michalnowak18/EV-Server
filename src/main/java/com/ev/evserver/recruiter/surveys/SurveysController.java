@@ -49,7 +49,7 @@ public class SurveysController {
     }
 
     @PatchMapping("/surveys/{id}")
-    public ResponseEntity<Object> modifySurvey(@Valid @RequestBody SurveyDto surveyDto,
+    public ResponseEntity<SurveyDto> modifySurvey(@Valid @RequestBody SurveyDto surveyDto,
                                                   @PathVariable Long id) {
 
         SurveyDto newSurveyDto = surveysService.modifySurvey(id, surveyDto);
