@@ -49,16 +49,12 @@ public class SurveysController {
     }
 
     @PatchMapping("/surveys/{id}")
-    public ResponseEntity<SurveyDto> modifySurvey(@Valid @RequestBody SurveyDto surveyDto,
+    public ResponseEntity<Object> modifySurvey(@Valid @RequestBody SurveyDto surveyDto,
                                                   @PathVariable Long id) {
 
         SurveyDto newSurveyDto = surveysService.modifySurvey(id, surveyDto);
 
-        if (newSurveyDto != null) {
-            return new ResponseEntity<>(newSurveyDto, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(newSurveyDto, HttpStatus.OK);
     }
 
     @PostMapping("/events/{eventId}/surveys")
