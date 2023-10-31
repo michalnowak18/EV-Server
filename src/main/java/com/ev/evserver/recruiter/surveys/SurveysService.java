@@ -1,5 +1,8 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.recruiter.availability.AvailabilitiesService;
+import com.ev.evserver.recruiter.availability.Availability;
+import com.ev.evserver.recruiter.availability.AvailabilityDto;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.events.EventsUtils;
@@ -21,12 +24,15 @@ public class SurveysService {
 
 	private final EventsUtils eventsUtils;
 
+	private final AvailabilitiesService availabilitiesService;
+
 	@Autowired
 	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository,
-						  EventsUtils eventsUtils) {
+						  EventsUtils eventsUtils, AvailabilitiesService availabilitiesService) {
 		this.surveyRepository = surveyRepository;
 		this.eventRepository = eventRepository;
 		this.eventsUtils = eventsUtils;
+		this.availabilitiesService = availabilitiesService;
 	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots, Event event) {
@@ -65,6 +71,12 @@ public class SurveysService {
 
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
+		Set<Availability> availabilities = event.getAvailabilities();
+
+		List<AvailabilityDto> availabilityDtoList = availabilities
+				.stream()
+				.map(AvailabilityDto::new)
+				.collect(Collectors.toList());
 
 		//case survey is new
 		if (newSurvey.getDate() != null
@@ -76,6 +88,7 @@ public class SurveysService {
 
 			event.setSlotsTaken(event.getSlotsTaken() + 1);
 			eventRepository.save(event);
+			availabilitiesService.modifyAvailability(availabilityDtoList,event.getId());
 
 			//case survey is new and event is full
 		} else if (newSurvey.getDate() != null

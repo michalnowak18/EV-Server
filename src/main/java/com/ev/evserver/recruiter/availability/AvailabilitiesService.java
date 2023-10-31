@@ -71,6 +71,8 @@ public class AvailabilitiesService {
 	private List<AvailabilityDto> updateIncludingSurvey(AvailabilityDto availabilityDto, SurveyDto surveyDto,
 														Event event) {
 
+		List<AvailabilityDto> finalList = new ArrayList<>();
+
 		Timestamp startDate = availabilityDto.getStartDate();
 		Timestamp endDate = availabilityDto.getEndDate();
 
@@ -81,16 +83,16 @@ public class AvailabilitiesService {
 				+ (long) (event.getSurveyBreakTime() * 60 * 1000));
 
 		long surveyDuration = (long) (event.getSurveyDuration() * 60 * 1000);
+		long surveyBreakTime = (long) (event.getSurveyBreakTime() * 60 * 1000);
+
 
 		AvailabilityDto newAvailabilityDto1 = new AvailabilityDto();
 		AvailabilityDto newAvailabilityDto2 = new AvailabilityDto();
-		List<AvailabilityDto> finalList = new ArrayList<>();
 
 		if (isAfterOrEqual(exclusionStart,startDate) && isAfterOrEqual(exclusionEnd, endDate)
 				&& exclusionStart.after(endDate)) {
 
-			System.out.println("----------------------------------------");
-			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration) {
+			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
 				System.out.println();
 				newAvailabilityDto1.setStartDate(startDate);
@@ -100,17 +102,10 @@ public class AvailabilitiesService {
 			}
 		}
 
-//		if (isAfterOrEqual(exclusionStart,startDate) && isAfterOrEqual(exclusionEnd, endDate)
-//				&& exclusionStart.before(endDate)) {
-//
-//		}
-
 		if (exclusionStart.after(startDate) && isAfterOrEqual(exclusionEnd,endDate)
 				&& exclusionStart.before(endDate)) {
-			System.out.println("----------------------------------------");
 
-
-			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration) {
+			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
 				newAvailabilityDto1.setStartDate(startDate);
 				newAvailabilityDto1.setEndDate(exclusionStart);
@@ -120,10 +115,8 @@ public class AvailabilitiesService {
 		}
 
 		if (exclusionStart.after(startDate) && exclusionEnd.before(endDate)) {
-			System.out.println("----------------------------------------");
 
-
-			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration) {
+			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
 				newAvailabilityDto1.setStartDate(startDate);
 				newAvailabilityDto1.setEndDate(exclusionStart);
@@ -131,7 +124,7 @@ public class AvailabilitiesService {
 				finalList.add(newAvailabilityDto1);
 			}
 
-			if (endDate.getTime() - exclusionEnd.getTime() >= surveyDuration) {
+			if (endDate.getTime() - exclusionEnd.getTime() >= surveyDuration + surveyBreakTime) {
 
 				newAvailabilityDto2.setStartDate(exclusionEnd);
 				newAvailabilityDto2.setEndDate(endDate);
@@ -139,15 +132,11 @@ public class AvailabilitiesService {
 				finalList.add(newAvailabilityDto2);
 			}
 		}
-//		if (isBeforeOrEqual(exclusionStart,startDate) && isAfterOrEqual(exclusionEnd,endDate)) {
-//
-//		}
 
 		if (isBeforeOrEqual(exclusionStart,startDate) && exclusionEnd.before(endDate)
-				&& isAfterOrEqual(exclusionEnd,startDate)) {
+				&& exclusionEnd.after(startDate)) {
 
-			System.out.println("--------------------------------------------");
-			if (endDate.getTime() - exclusionEnd.getTime() >= surveyDuration) {
+			if (endDate.getTime() - exclusionEnd.getTime() >= surveyDuration + surveyBreakTime) {
 
 				newAvailabilityDto1.setStartDate(exclusionEnd);
 				newAvailabilityDto1.setEndDate(endDate);
@@ -159,9 +148,7 @@ public class AvailabilitiesService {
 		if (isBeforeOrEqual(exclusionStart,startDate) && isBeforeOrEqual(exclusionEnd,endDate)
 				&& isBeforeOrEqual(exclusionEnd,startDate)) {
 
-			System.out.println("----------------------------------------");
-
-			if (endDate.getTime() - startDate.getTime() >= surveyDuration) {
+			if (endDate.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
 				newAvailabilityDto1.setStartDate(startDate);
 				newAvailabilityDto1.setEndDate(endDate);
@@ -174,19 +161,22 @@ public class AvailabilitiesService {
 	}
 
 	private boolean isAfterOrEqual(Timestamp timestamp1, Timestamp timestamp2) {
+
 		return timestamp1.after(timestamp2) || timestamp1.equals(timestamp2);
 	}
 
 	private boolean isBeforeOrEqual(Timestamp timestamp1, Timestamp timestamp2) {
+
 		return timestamp1.before(timestamp2) || timestamp1.equals(timestamp2);
 	}
 
-	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoList, Long eventId) {
+	public List<AvailabilityDto> modifyAvailability(List<AvailabilityDto> availabilityDtoListUpdated,
+													Long eventId) {
 
 		Event retrievedEvent = eventsUtils.fetchValidEvent(eventId);
-
 		Set<Survey> surveys = surveyRepository.findByEvent(retrievedEvent);
 
+		List<AvailabilityDto> availabilityDtoListNew = new ArrayList<>();
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
 		List<SurveyDto> surveyDtoList = surveys
@@ -194,13 +184,11 @@ public class AvailabilitiesService {
 				.map(SurveyDto::new)
 				.collect(Collectors.toList());
 
-		List<AvailabilityDto> availabilityDtoListNew = new ArrayList<>();
-
 		for (SurveyDto surveyDto : surveyDtoList) {
 
 			if (surveyDto.getDate() != null) {
 
-				for (AvailabilityDto availabilityDto : availabilityDtoList) {
+				for (AvailabilityDto availabilityDto : availabilityDtoListUpdated) {
 
 					availabilityDtoListNew.addAll(updateIncludingSurvey(availabilityDto, surveyDto, retrievedEvent));
 				}
@@ -208,14 +196,17 @@ public class AvailabilitiesService {
 				availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 				saveAvailabilityList(availabilityDtoListNew, eventId);
 
+				availabilityDtoListUpdated.clear();
+				availabilityDtoListUpdated.addAll(availabilityDtoListNew);
+				availabilityDtoListNew.clear();
 			}
+		}
 
-			availabilityDtoList.clear();
-			availabilityDtoList.addAll(availabilityDtoListNew);
-			availabilityDtoListNew.clear();
+		if (getAll(eventId).isEmpty()) {
+
+			saveAvailabilityList(availabilityDtoListUpdated, eventId);
 		}
 
 		return getAll(eventId);
 	}
-
 }
