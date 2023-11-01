@@ -28,4 +28,11 @@ public class AvailabilityDto {
 		this.endDate = availability.getEndDate();
 		this.eventId = availability.getEvent().getId();
 	}
+
+	public AvailabilityDto(Long id, Timestamp startDate, Timestamp endDate, Long eventId) {
+		this.id = id;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.eventId = eventId;
+	}
 }
