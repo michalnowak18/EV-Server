@@ -2,6 +2,9 @@ package com.ev.evserver.recruiter.availability;
 
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventsUtils;
+import com.ev.evserver.recruiter.initialAvailability.InitialAvailability;
+import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityDto;
+import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityRepository;
 import com.ev.evserver.recruiter.surveys.Survey;
 import com.ev.evserver.recruiter.surveys.SurveyDto;
 import com.ev.evserver.recruiter.surveys.SurveyRepository;
@@ -24,12 +27,17 @@ public class AvailabilitiesService {
 
 	private final SurveyRepository surveyRepository;
 
+	private final InitialAvailabilityRepository initialAvailabilityRepository;
+
+
 	@Autowired
 	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils,
-								 SurveyRepository surveyRepository) {
+								 SurveyRepository surveyRepository,
+								 InitialAvailabilityRepository initialAvailabilityRepository) {
 		this.availabilityRepository = availabilityRepository;
 		this.eventsUtils = eventsUtils;
 		this.surveyRepository = surveyRepository;
+		this.initialAvailabilityRepository = initialAvailabilityRepository;
 	}
 
 	public List<AvailabilityDto> saveAvailabilityList(List<AvailabilityDto> availabilityDtoList, long eventId) {
@@ -37,6 +45,13 @@ public class AvailabilitiesService {
 		Event event = eventsUtils.fetchValidEvent(eventId);
 
 		return saveAll(availabilityDtoList, event);
+	}
+
+	public List<AvailabilityDto> saveInitialAvailabilityList(List<AvailabilityDto> availabilityDtoList, long eventId) {
+
+		Event event = eventsUtils.fetchValidEvent(eventId);
+
+		return saveInitialAvailabilityAll(availabilityDtoList, event);
 	}
 
 	public List<AvailabilityDto> getAll(long eventId) {
@@ -51,10 +66,30 @@ public class AvailabilitiesService {
 		return availabilityDtoList;
 	}
 
+	public List<InitialAvailabilityDto> getAllInitial(long eventId) {
+
+		Event event = eventsUtils.fetchValidEvent(eventId);
+		Set<InitialAvailability> availabilities = initialAvailabilityRepository.findByEvent(event);
+
+		List<InitialAvailabilityDto> availabilityDtoList = availabilities
+				.stream()
+				.map(InitialAvailabilityDto::new)
+				.collect(Collectors.toList());
+
+		return availabilityDtoList;
+	}
+
 	private List<AvailabilityDto> saveAll(List<AvailabilityDto> availabilityDtoList, Event event) {
 
 		return availabilityDtoList.stream()
 				.map(availabilityDto -> saveAvailability(availabilityDto, event))
+				.collect(Collectors.toList());
+	}
+
+	private List<AvailabilityDto> saveInitialAvailabilityAll(List<AvailabilityDto> availabilityDtoList, Event event) {
+
+		return availabilityDtoList.stream()
+				.map(availabilityDto -> saveInitialAvailability(availabilityDto, event))
 				.collect(Collectors.toList());
 	}
 
@@ -66,6 +101,16 @@ public class AvailabilitiesService {
 		event.getAvailabilities().add(availability);
 
 		return new AvailabilityDto(availabilityRepository.save(availability));
+	}
+
+	private AvailabilityDto saveInitialAvailability(@Valid AvailabilityDto availabilityDto, Event event) {
+
+		InitialAvailability initialAvailability = new InitialAvailability(availabilityDto);
+
+		initialAvailability.setEvent(event);
+		initialAvailabilityRepository.save(initialAvailability);
+
+		return availabilityDto;
 	}
 
 	private List<AvailabilityDto> updateIncludingSurvey(AvailabilityDto availabilityDto, SurveyDto surveyDto,
@@ -178,6 +223,9 @@ public class AvailabilitiesService {
 
 		List<AvailabilityDto> availabilityDtoListNew = new ArrayList<>();
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
+
+		initialAvailabilityRepository.deleteAll(initialAvailabilityRepository.findByEvent(retrievedEvent));
+		saveInitialAvailabilityList(availabilityDtoListUpdated, eventId);
 
 		List<SurveyDto> surveyDtoList = surveys
 				.stream()
