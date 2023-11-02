@@ -51,6 +51,8 @@ public class AvailabilitiesService {
 
 		Event event = eventsUtils.fetchValidEvent(eventId);
 
+		initialAvailabilityRepository.deleteAll(initialAvailabilityRepository.findByEvent(event));
+
 		return saveInitialAvailabilityAll(availabilityDtoList, event);
 	}
 
@@ -135,11 +137,10 @@ public class AvailabilitiesService {
 		AvailabilityDto newAvailabilityDto2 = new AvailabilityDto();
 
 		if (isAfterOrEqual(exclusionStart,startDate) && isAfterOrEqual(exclusionEnd, endDate)
-				&& exclusionStart.after(endDate)) {
+				&& isAfterOrEqual(exclusionStart,endDate)) {
 
-			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
+			if (endDate.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
-				System.out.println();
 				newAvailabilityDto1.setStartDate(startDate);
 				newAvailabilityDto1.setEndDate(endDate);
 
@@ -159,7 +160,7 @@ public class AvailabilitiesService {
 			}
 		}
 
-		if (exclusionStart.after(startDate) && exclusionEnd.before(endDate)) {
+		if (isAfterOrEqual(exclusionStart,startDate) && isBeforeOrEqual(exclusionEnd,endDate)) {
 
 			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {
 
@@ -224,9 +225,6 @@ public class AvailabilitiesService {
 		List<AvailabilityDto> availabilityDtoListNew = new ArrayList<>();
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
-		initialAvailabilityRepository.deleteAll(initialAvailabilityRepository.findByEvent(retrievedEvent));
-		saveInitialAvailabilityList(availabilityDtoListUpdated, eventId);
-
 		List<SurveyDto> surveyDtoList = surveys
 				.stream()
 				.map(SurveyDto::new)
@@ -236,23 +234,33 @@ public class AvailabilitiesService {
 
 			if (surveyDto.getDate() != null) {
 
+				availabilityDtoListNew.clear();
+
 				for (AvailabilityDto availabilityDto : availabilityDtoListUpdated) {
 
 					availabilityDtoListNew.addAll(updateIncludingSurvey(availabilityDto, surveyDto, retrievedEvent));
 				}
 
 				availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
-				saveAvailabilityList(availabilityDtoListNew, eventId);
+
+				if (availabilityDtoListNew.isEmpty()) {
+
+					saveAvailabilityList(availabilityDtoListUpdated, eventId);
+
+				} else {
+
+					saveAvailabilityList(availabilityDtoListNew, eventId);
+				}
 
 				availabilityDtoListUpdated.clear();
-				availabilityDtoListUpdated.addAll(availabilityDtoListNew);
-				availabilityDtoListNew.clear();
+				availabilityDtoListUpdated.addAll(getAll(eventId));
 			}
 		}
 
 		if (getAll(eventId).isEmpty()) {
 
 			saveAvailabilityList(availabilityDtoListUpdated, eventId);
+
 		}
 
 		return getAll(eventId);
