@@ -103,6 +103,7 @@ public class SurveysService {
 
 				event.setSlotsTaken(event.getSlotsTaken() + 1);
 				eventRepository.save(event);
+
 				availabilitiesService.modifyAvailability(availabilityDtoList, event.getId());
 
 			} //case survey is new and event is full
