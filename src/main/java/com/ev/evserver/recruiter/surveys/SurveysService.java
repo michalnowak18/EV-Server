@@ -1,11 +1,14 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.common.exceptions.EventIsFullException;
+import com.ev.evserver.common.exceptions.SlotConflictException;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.events.EventsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,27 +70,29 @@ public class SurveysService {
 		Event event = survey.getEvent();
 
 		//case survey is new
-		if (newSurvey.getDate() != null
-			&& survey.getDate() == null
-			&& !event.isFull()) {
+		if (newSurvey.getDate() != null && newSurvey.getSurveyState() != SurveyState.INACTIVE) {
 
-			survey.setDate(newSurvey.getDate());
-			survey.setSurveyState(SurveyState.USED);
+			if (survey.getDate() != null || isHourTaken(newSurvey.getDate(), event.getId())) {
+				throw new SlotConflictException();
 
-			event.setSlotsTaken(event.getSlotsTaken() + 1);
-			eventRepository.save(event);
+			} else if (event.isFull()) {
+				throw new EventIsFullException();
 
-			//case survey is new and event is full
-		} else if (newSurvey.getDate() != null
-		            && event.isFull()
-					&& newSurvey.getSurveyState() != SurveyState.INACTIVE) {
+			} else {
 
-			return null;
+				survey.setDate(newSurvey.getDate());
+				survey.setSurveyState(SurveyState.USED);
+
+				event.setSlotsTaken(event.getSlotsTaken() + 1);
+				eventRepository.save(event);
+			}
 		}
 
 		//case survey is going to be deactivated
 		if (newSurvey.getSurveyState() == SurveyState.INACTIVE) {
+
 			if (survey.getSurveyState() == SurveyState.USED) {
+
 				event.setSlotsTaken(event.getSlotsTaken() - 1);
 				eventRepository.save(event);
 			}
@@ -96,9 +101,7 @@ public class SurveysService {
 			survey.setDate(null);
 		}
 
-		SurveyDto newSurveyDto = new SurveyDto(surveyRepository.save(survey));
-
-		return newSurveyDto;
+		return new SurveyDto(surveyRepository.save(survey));
 	}
 
 	public void deactivateAllCodes(Event event) {
@@ -121,6 +124,15 @@ public class SurveysService {
 				.collect(Collectors.toList());
 
 		return surveyDtoList;
+	}
+
+	private boolean isHourTaken(Timestamp newSurveyDate, long eventId) {
+
+		List<SurveyDto> surveyDtoList = findByEvent(eventId);
+
+		return surveyDtoList
+				.stream()
+				.anyMatch(surveyDto -> surveyDto.getDate() != null && surveyDto.getDate().equals(newSurveyDate));
 	}
 
 }

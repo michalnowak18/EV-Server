@@ -54,11 +54,7 @@ public class SurveysController {
 
         SurveyDto newSurveyDto = surveysService.modifySurvey(id, surveyDto);
 
-        if (newSurveyDto != null) {
-            return new ResponseEntity<>(newSurveyDto, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(newSurveyDto, HttpStatus.OK);
     }
 
     @PostMapping("/events/{eventId}/surveys")
