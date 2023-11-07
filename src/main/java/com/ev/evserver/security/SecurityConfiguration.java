@@ -16,6 +16,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,8 +38,14 @@ public class SecurityConfiguration  {
 			.authorizeHttpRequests()
 			.requestMatchers("/auth/**")
 			.permitAll()
+			.requestMatchers(GET, "/events/{id}")
+			.permitAll()
+			.requestMatchers("/surveys/**")
+			.permitAll()
+			.requestMatchers(GET, "events/{eventId}/availabilities")
+			.permitAll()
 			.anyRequest()
-			.authenticated()
+			.authenticated() //TODO: Refactor and adjust requestMatchers in next sprint to function according to user roles
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
