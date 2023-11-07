@@ -1,17 +1,15 @@
 package com.ev.evserver.authentication;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class LoginDto {
+@Getter
+@Setter
+public class LoginDto extends AuthData {
 
-	private String email;
-
-	private String password;
+	@Builder
+	public LoginDto(String email, String password) {
+		super(email, password);
+	}
 }
