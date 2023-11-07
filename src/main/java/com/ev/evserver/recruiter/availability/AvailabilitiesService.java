@@ -100,7 +100,8 @@ public class AvailabilitiesService {
 		Availability availability = new Availability(availabilityDto);
 
 		availability.setEvent(event);
-		event.getAvailabilities().add(availability);
+		availabilityRepository.save(availability);
+//		event.getAvailabilities().add(availability);
 
 		return new AvailabilityDto(availabilityRepository.save(availability));
 	}
@@ -123,15 +124,12 @@ public class AvailabilitiesService {
 		Timestamp startDate = availabilityDto.getStartDate();
 		Timestamp endDate = availabilityDto.getEndDate();
 
-		Timestamp exclusionStart = new Timestamp(surveyDto.getDate().getTime()
-				- (long) (event.getSurveyBreakTime() * 60 * 1000));
-		Timestamp exclusionEnd = new Timestamp(surveyDto.getDate().getTime()
-				+ (long) (event.getSurveyDuration() * 60 * 1000)
-				+ (long) (event.getSurveyBreakTime() * 60 * 1000));
-
 		long surveyDuration = (long) (event.getSurveyDuration() * 60 * 1000);
 		long surveyBreakTime = (long) (event.getSurveyBreakTime() * 60 * 1000);
 
+		Timestamp exclusionStart = new Timestamp(surveyDto.getDate().getTime() - surveyBreakTime);
+
+		Timestamp exclusionEnd = new Timestamp(surveyDto.getDate().getTime() + surveyDuration + surveyBreakTime);
 
 		AvailabilityDto newAvailabilityDto1 = new AvailabilityDto();
 		AvailabilityDto newAvailabilityDto2 = new AvailabilityDto();
@@ -179,7 +177,7 @@ public class AvailabilitiesService {
 			}
 		}
 
-		if (isBeforeOrEqual(exclusionStart,startDate) && exclusionEnd.before(endDate)
+		if (exclusionStart.before(startDate) && exclusionEnd.before(endDate)
 				&& exclusionEnd.after(startDate)) {
 
 			if (endDate.getTime() - exclusionEnd.getTime() >= surveyDuration + surveyBreakTime) {
@@ -223,6 +221,7 @@ public class AvailabilitiesService {
 		Set<Survey> surveys = surveyRepository.findByEvent(retrievedEvent);
 
 		List<AvailabilityDto> availabilityDtoListNew = new ArrayList<>();
+
 		availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
 		List<SurveyDto> surveyDtoList = surveys
@@ -243,24 +242,18 @@ public class AvailabilitiesService {
 
 				availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
-				if (availabilityDtoListNew.isEmpty()) {
-
-					saveAvailabilityList(availabilityDtoListUpdated, eventId);
-
-				} else {
-
-					saveAvailabilityList(availabilityDtoListNew, eventId);
-				}
+				saveAvailabilityList(availabilityDtoListNew, eventId);
 
 				availabilityDtoListUpdated.clear();
 				availabilityDtoListUpdated.addAll(getAll(eventId));
 			}
 		}
 
-		if (getAll(eventId).isEmpty()) {
+		if (availabilityDtoListNew.isEmpty()) {
+
+			availabilityRepository.deleteAll(availabilityRepository.findByEvent(retrievedEvent));
 
 			saveAvailabilityList(availabilityDtoListUpdated, eventId);
-
 		}
 
 		return getAll(eventId);
