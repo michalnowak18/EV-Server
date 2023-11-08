@@ -31,12 +31,16 @@ public class AvailabilitiesController {
 	public ResponseEntity<List<AvailabilityDto>> saveAll(@RequestBody @Valid ValidList<AvailabilityDto> availabilityDtoList,
 														 @PathVariable Long eventId) {
 
+		availabilitiesService.saveInitialAvailabilityList(availabilityDtoList,eventId);
+
 		return new ResponseEntity<>(availabilitiesService.saveAvailabilityList(availabilityDtoList, eventId), HttpStatus.OK);
 	}
 
 	@PatchMapping
 	public ResponseEntity<List<AvailabilityDto>> updateAvailabilities(@RequestBody @Valid ValidList<AvailabilityDto> availabilityDtoList,
 																	  @PathVariable Long eventId) {
+
+		availabilitiesService.saveInitialAvailabilityList(availabilityDtoList,eventId);
 
 		return new ResponseEntity<>(availabilitiesService.modifyAvailability(availabilityDtoList,eventId), HttpStatus.OK);
 	}

@@ -2,9 +2,14 @@ package com.ev.evserver.recruiter.surveys;
 
 import com.ev.evserver.common.exceptions.EventIsFullException;
 import com.ev.evserver.common.exceptions.SlotConflictException;
+import com.ev.evserver.recruiter.availability.AvailabilitiesService;
+import com.ev.evserver.recruiter.availability.Availability;
+import com.ev.evserver.recruiter.availability.AvailabilityDto;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.events.EventsUtils;
+import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityDto;
+import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +29,19 @@ public class SurveysService {
 
 	private final EventsUtils eventsUtils;
 
+	private final AvailabilitiesService availabilitiesService;
+
+	private final InitialAvailabilityRepository initialAvailabilityRepository;
+
 	@Autowired
 	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository,
-						  EventsUtils eventsUtils) {
+						  EventsUtils eventsUtils, AvailabilitiesService availabilitiesService,
+						  InitialAvailabilityRepository initialAvailabilityRepository) {
 		this.surveyRepository = surveyRepository;
 		this.eventRepository = eventRepository;
 		this.eventsUtils = eventsUtils;
+		this.availabilitiesService = availabilitiesService;
+		this.initialAvailabilityRepository = initialAvailabilityRepository;
 	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots, Event event) {
@@ -69,6 +81,13 @@ public class SurveysService {
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
 
+		Set<Availability> availabilities = event.getAvailabilities();
+
+		List<AvailabilityDto> availabilityDtoList = availabilities
+				.stream()
+				.map(AvailabilityDto::new)
+				.collect(Collectors.toList());
+
 		//case survey is new
 		if (newSurvey.getDate() != null && newSurvey.getSurveyState() != SurveyState.INACTIVE) {
 
@@ -85,6 +104,9 @@ public class SurveysService {
 
 				event.setSlotsTaken(event.getSlotsTaken() + 1);
 				eventRepository.save(event);
+
+				availabilitiesService.modifyAvailability(availabilityDtoList, event.getId());
+
 			}
 		}
 
@@ -99,6 +121,15 @@ public class SurveysService {
 
 			survey.setSurveyState(newSurvey.getSurveyState());
 			survey.setDate(null);
+
+			List<InitialAvailabilityDto> initialAvailabilities = availabilitiesService.getAllInitial(event.getId());
+
+			List<AvailabilityDto> initialAvailabilityList = initialAvailabilities
+					.stream()
+					.map(a -> new AvailabilityDto(a.getId(), a.getStartDate(), a.getEndDate(), a.getEventId()))
+					.collect(Collectors.toList());
+
+			availabilitiesService.modifyAvailability(initialAvailabilityList, event.getId());
 		}
 
 		return new SurveyDto(surveyRepository.save(survey));
