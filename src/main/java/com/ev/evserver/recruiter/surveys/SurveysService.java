@@ -1,7 +1,7 @@
 package com.ev.evserver.recruiter.surveys;
 
-import com.ev.evserver.common.exceptions.EventIsFullException;
-import com.ev.evserver.common.exceptions.SlotConflictException;
+import com.ev.evserver.exceptions.EventIsFullException;
+import com.ev.evserver.exceptions.SlotConflictException;
 import com.ev.evserver.recruiter.availability.AvailabilitiesService;
 import com.ev.evserver.recruiter.availability.Availability;
 import com.ev.evserver.recruiter.availability.AvailabilityDto;
