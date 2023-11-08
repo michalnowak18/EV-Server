@@ -80,6 +80,7 @@ public class SurveysService {
 
 		Survey survey = surveyRepository.findById(id).orElseThrow();
 		Event event = survey.getEvent();
+
 		Set<Availability> availabilities = event.getAvailabilities();
 
 		List<AvailabilityDto> availabilityDtoList = availabilities
@@ -106,12 +107,7 @@ public class SurveysService {
 
 				availabilitiesService.modifyAvailability(availabilityDtoList, event.getId());
 
-			} //case survey is new and event is full
-		} else if (newSurvey.getDate() != null
-				&& event.isFull()
-				&& newSurvey.getSurveyState() != SurveyState.INACTIVE) {
-
-			return null;
+			}
 		}
 
 		//case survey is going to be deactivated
