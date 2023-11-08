@@ -35,4 +35,10 @@ public class AvailabilityDto {
 		this.endDate = endDate;
 		this.eventId = eventId;
 	}
+
+	public AvailabilityDto(Timestamp startDate, Timestamp endDate, Long eventId) {
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.eventId = eventId;
+	}
 }
