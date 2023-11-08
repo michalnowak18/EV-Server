@@ -100,8 +100,7 @@ public class AvailabilitiesService {
 		Availability availability = new Availability(availabilityDto);
 
 		availability.setEvent(event);
-		availabilityRepository.save(availability);
-//		event.getAvailabilities().add(availability);
+		event.getAvailabilities().add(availability);
 
 		return new AvailabilityDto(availabilityRepository.save(availability));
 	}
