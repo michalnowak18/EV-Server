@@ -23,14 +23,12 @@ public class AuthService {
 
 	private final AuthenticationManager authenticationManager;
 
-	private final SurveysUtils surveysUtils;
-
 	public AuthenticationDto register(RegistrationDto registrationDto) {
 
 		User user = User.builder()
 			.email(registrationDto.getEmail())
 			.name(registrationDto.getName())
-			.password(passwordEncoder.encode(surveysUtils.generateCode()))
+			.password(passwordEncoder.encode(SurveysUtils.generateCode()))
 			.role(Role.RECRUITER)
 			.build();
 
