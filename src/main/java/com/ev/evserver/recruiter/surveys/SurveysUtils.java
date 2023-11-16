@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 public class SurveysUtils {
 
-	static String generateCode() {
+	public static String generateCode() {
 		return RandomStringUtils.randomAlphanumeric(12);
 	}
 	
