@@ -1,5 +1,6 @@
 package com.ev.evserver.authentication;
 
+import com.ev.evserver.recruiter.surveys.SurveysUtils;
 import com.ev.evserver.security.JwtService;
 import com.ev.evserver.user.Role;
 import com.ev.evserver.user.User;
@@ -22,11 +23,14 @@ public class AuthService {
 
 	private final AuthenticationManager authenticationManager;
 
+	private final SurveysUtils surveysUtils;
+
 	public AuthenticationDto register(RegistrationDto registrationDto) {
 
 		User user = User.builder()
 			.email(registrationDto.getEmail())
-			.password(passwordEncoder.encode(registrationDto.getPassword()))
+			.name(registrationDto.getName())
+			.password(passwordEncoder.encode(surveysUtils.generateCode()))
 			.role(Role.RECRUITER)
 			.build();
 

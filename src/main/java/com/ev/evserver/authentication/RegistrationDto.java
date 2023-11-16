@@ -1,6 +1,5 @@
 package com.ev.evserver.authentication;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,10 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RegistrationDto extends AuthData {
+public class RegistrationDto {
 
-	@Builder
-	public RegistrationDto(String email, String password) {
-		super(email, password);
-	}
+	private String email;
+
+	private String name;
+
 }
