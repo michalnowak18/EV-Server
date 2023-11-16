@@ -29,7 +29,7 @@ public class AuthService {
 			.email(registrationDto.getEmail())
 			.name(registrationDto.getName())
 			.password(passwordEncoder.encode(SurveysUtils.generateCode()))
-			.role(Role.RECRUITER)
+			.role(registrationDto.role)
 			.build();
 
 		userRepository.save(user);
