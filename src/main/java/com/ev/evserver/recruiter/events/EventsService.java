@@ -1,10 +1,13 @@
 package com.ev.evserver.recruiter.events;
 
 import com.ev.evserver.recruiter.surveys.SurveysService;
+import com.ev.evserver.user.User;
+import com.ev.evserver.user.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,7 +22,8 @@ public class EventsService {
 
 	public List<EventDto> getAllEvents() {
 
-		List<Event> eventList = eventRepository.findAll();
+		User user = userUtils.fetchValidUser(userId);
+		Set<Event> eventList = eventRepository.findByUser(user);
 
 		return eventList.stream().map(EventDto::new).collect(Collectors.toList());
 	}
@@ -30,19 +34,16 @@ public class EventsService {
 		return new EventDto(event);
 	}
 
-	public EventDto saveEvent(EventDto eventDto) {
+	public EventDto saveEvent(EventDto eventDto, Long userId) {
 
 		Event event = new Event(eventDto);
+		event.setUser(userUtils.fetchValidUser(userId));
 
 		Event savedEvent = eventRepository.save(event);
 
-		if (savedEvent != null) {
+		surveysService.saveSurveyWithGeneratedSlots(event.getMaxUsers(), savedEvent);
+		return new EventDto(savedEvent);
 
-			surveysService.saveSurveyWithGeneratedSlots(event.getMaxUsers(), savedEvent);
-			return new EventDto(savedEvent);
-		}
-
-		return null;
 	}
 
 	public EventDto modifyEvent(EventDto eventDto, Long id) {

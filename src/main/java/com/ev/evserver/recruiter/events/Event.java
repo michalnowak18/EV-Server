@@ -2,12 +2,14 @@ package com.ev.evserver.recruiter.events;
 
 import com.ev.evserver.recruiter.availability.Availability;
 import com.ev.evserver.recruiter.surveys.Survey;
+import com.ev.evserver.user.User;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Date;
 import java.util.Set;
 
@@ -63,6 +65,10 @@ public class Event {
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Survey> surveys;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_user", nullable = false)
+    private User user;
 
     public Event() {
     }

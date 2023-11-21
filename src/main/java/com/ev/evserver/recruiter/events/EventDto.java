@@ -38,6 +38,8 @@ public class EventDto {
 
 	private boolean isActive = true;
 
+	private Long userId;
+
 	public EventDto() {
 	}
 
@@ -53,5 +55,6 @@ public class EventDto {
 		this.researchStartDate = event.getResearchStartDate();
 		this.researchEndDate = event.getResearchEndDate();
 		this.isActive = event.isActive();
+		this.userId = event.getUser().getId();
 	}
 }

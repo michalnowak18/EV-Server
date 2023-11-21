@@ -1,5 +1,6 @@
 package com.ev.evserver.user;
 
+import com.ev.evserver.recruiter.events.Event;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,6 +34,9 @@ public class User implements UserDetails {
 	private Role role;
 
 	private boolean isBlocked = false;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private Set<Event> events;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
