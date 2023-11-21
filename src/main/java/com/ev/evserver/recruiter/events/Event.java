@@ -41,7 +41,7 @@ public class Event {
     private Float surveyDuration;
 
     @NotNull(message = "Podaj długość przerwy")
-    @Column(name = "survey_break_time ")
+    @Column(name = "survey_break_time")
     private Float surveyBreakTime;
 
     @Column(name = "slots_taken")

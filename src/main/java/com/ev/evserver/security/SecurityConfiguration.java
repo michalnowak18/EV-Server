@@ -1,5 +1,6 @@
 package com.ev.evserver.security;
 
+import com.ev.evserver.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -36,16 +37,12 @@ public class SecurityConfiguration  {
 			.cors()
 			.and()
 			.authorizeHttpRequests()
-			.requestMatchers("/auth/**")
-			.permitAll()
-			.requestMatchers(GET, "/events/{id}")
-			.permitAll()
-			.requestMatchers("/surveys/**")
-			.permitAll()
-			.requestMatchers(GET, "events/{eventId}/availabilities")
-			.permitAll()
-			.anyRequest()
-			.authenticated() //TODO: Refactor and adjust requestMatchers in next sprint to function according to user roles
+				.requestMatchers("/auth/**", "/surveys/**").permitAll()
+				.requestMatchers(GET, "/events/{id}", "events/{eventId}/availabilities").permitAll()
+				.requestMatchers(POST, "/events", "/events/**").hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers(PATCH, "/events/**").hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers( "/admin/**").hasAuthority(Role.ADMIN.name())
+				.anyRequest().authenticated()
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

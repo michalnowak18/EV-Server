@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class AuthenticationDto {
 
 	private String token;
+
+	private String password;
 }

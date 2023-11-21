@@ -2,7 +2,6 @@ package com.ev.evserver.authentication;
 
 import com.ev.evserver.recruiter.surveys.SurveysUtils;
 import com.ev.evserver.security.JwtService;
-import com.ev.evserver.user.Role;
 import com.ev.evserver.user.User;
 import com.ev.evserver.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +24,20 @@ public class AuthService {
 
 	public AuthenticationDto register(RegistrationDto registrationDto) {
 
+		String password = SurveysUtils.generateCode();
+
 		User user = User.builder()
 			.email(registrationDto.getEmail())
 			.name(registrationDto.getName())
-			.password(passwordEncoder.encode(SurveysUtils.generateCode()))
-			.role(Role.RECRUITER)
+			.password(passwordEncoder.encode(password))
+			.role(registrationDto.getRole())
 			.build();
 
 		userRepository.save(user);
 
 		return AuthenticationDto.builder()
 			.token(jwtService.generateToken(user))
+			.password(password)
 			.build();
 	}
 
