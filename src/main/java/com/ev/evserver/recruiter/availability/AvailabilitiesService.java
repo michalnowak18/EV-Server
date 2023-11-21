@@ -145,7 +145,7 @@ public class AvailabilitiesService {
 			}
 		}
 
-		if (exclusionStart.after(startDate) && isAfterOrEqual(exclusionEnd,endDate)
+		if (exclusionStart.after(startDate) && exclusionEnd.after(endDate)
 				&& exclusionStart.before(endDate)) {
 
 			if (exclusionStart.getTime() - startDate.getTime() >= surveyDuration + surveyBreakTime) {

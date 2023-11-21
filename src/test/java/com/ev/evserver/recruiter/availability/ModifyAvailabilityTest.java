@@ -849,6 +849,74 @@ public class ModifyAvailabilityTest {
         eventRepository.deleteAll();
     }
 
+    @Test
+    @Transactional
+    public void givenAvailabilityListWhenSurveysDateIsNotNull9() {
+
+        List<AvailabilityDto> availabilityDtoList = new ArrayList<>();
+        List<AvailabilityDto> updatedAvailabilityDtoList = new ArrayList<>();
+        List<AvailabilityDto> expectedAvailability = new ArrayList<>();
+        Set<Availability> availabilitySet = new HashSet<>();
+
+        /* INITIAL AVAILABILITIES */
+
+        Event event = new Event (
+
+                "eventTest",
+                "test",
+                Date.valueOf("2022-01-01"),
+                3,
+                30.0f,
+                30.0f,
+                0,
+                Date.valueOf("2022-02-02"),
+                Date.valueOf("2022-02-22"));
+
+        Event savedEvent = eventRepository.save(event);
+
+        AvailabilityDto availabilityDto1 = new AvailabilityDto (
+
+                Timestamp.valueOf("2022-02-02 09:00:00"),
+                Timestamp.valueOf("2022-02-02 14:00:00"),
+                savedEvent.getId()
+        );
+
+        availabilityDtoList.add(availabilityDto1);
+
+        for (AvailabilityDto availability1 : availabilityDtoList) {
+
+            Availability newAvailability = new Availability (availability1);
+            availabilitySet.add(newAvailability);
+        }
+
+        savedEvent.setAvailabilities(availabilitySet);
+
+        /* SET SURVEY DATE */
+
+        surveysService.saveSurveyWithGeneratedSlots(savedEvent.getMaxUsers(), savedEvent);
+
+        String code = surveysService.findByEvent(savedEvent.getId()).get(0).getCode();
+        surveyRepository.findByCode(code).setDate(Timestamp.valueOf("2022-02-02 13:00:00"));
+
+        availabilitiesService.modifyAvailability(availabilityDtoList, savedEvent.getId());
+
+        /* EXPECTED AVAILABILITIES */
+
+        AvailabilityDto expectedAvailability1 = new AvailabilityDto (
+
+                Timestamp.valueOf("2022-02-02 09:00:00"),
+                Timestamp.valueOf("2022-02-02 12:30:00"),
+                savedEvent.getId()
+        );
+
+        expectedAvailability.add(expectedAvailability1);
+
+        Assertions.assertArrayEquals(ignoreAvailabilityId(expectedAvailability).toArray(),
+                ignoreAvailabilityId(availabilitiesService.getAll(savedEvent.getId())).toArray());
+
+        availabilityRepository.deleteAll();
+        eventRepository.deleteAll();
+    }
     public List<AvailabilityDto> ignoreAvailabilityId(List<AvailabilityDto> availabilityDtoList1) {
 
         for (AvailabilityDto availabilityDto : availabilityDtoList1) {
