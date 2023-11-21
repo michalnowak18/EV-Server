@@ -1,5 +1,8 @@
 package com.ev.evserver.recruiter.events;
 
+import com.ev.evserver.user.User;
+import com.ev.evserver.user.UserRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -18,21 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EventRepositoryTest {
+
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     public void givenCreateEventWhenLoadTheEventThenExpectSameEvent() {
-        Event event = new Event(
-                "eventTest",
-                "test",
-                Date.valueOf( "2022-01-01"),
-                4,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
+
+        Event event = createEvent("Event");
         Event savedEvent = eventRepository.save(event);
         assertThat(eventRepository.findById(savedEvent.getId()).get()).isEqualTo(event);
         eventRepository.delete(savedEvent);
@@ -45,45 +44,44 @@ public class EventRepositoryTest {
     }
 
     private void saveMockEvents(){
-        Event event1 = new Event(
-                "eventTest",
-                "test",
-                Date.valueOf( "2022-01-01"),
-                4,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
 
-        Event event2 = new Event(
-                "eventTest",
-                "test",
-                Date.valueOf( "2022-01-01"),
-                4,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
+        Event event = createEvent(RandomStringUtils.randomAlphabetic(8));
 
-        Event event3 = new Event(
-                "eventTest",
-                "test",
-                Date.valueOf( "2022-01-01"),
-                4,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
+        List<Event> events = Arrays.asList(
+            createEvent("Event1"),
+            createEvent("Event2"),
+            createEvent("Event3"));
 
-        List<Event> events = Arrays.asList(event1,event2,event3);
         eventRepository.saveAll(events);
     }
 
     @AfterAll
     public void clearDatabaseAfterAll() {
         eventRepository.deleteAll();
+    }
+
+    private Event createEvent(String name) {
+
+        Event event = new Event(
+            name,
+            "test",
+            Date.valueOf( "2022-01-01"),
+            4,
+            60.0f,
+            30.0f,
+            0,
+            Date.valueOf("2022-02-02"),
+            Date.valueOf("2022-02-22"),
+            createUser());
+
+        return event;
+    }
+
+    private User createUser() {
+
+        User user = new User();
+        userRepository.save(user);
+
+        return user;
     }
 }

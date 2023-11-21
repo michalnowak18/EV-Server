@@ -4,6 +4,8 @@ import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.surveys.SurveyRepository;
 import com.ev.evserver.recruiter.surveys.SurveysService;
+import com.ev.evserver.user.User;
+import com.ev.evserver.user.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,17 +37,21 @@ public class ModifyAvailabilityTest {
 
     private SurveyRepository surveyRepository;
 
+    private UserRepository userRepository;
+
     @Autowired
     public ModifyAvailabilityTest(AvailabilitiesService availabilitiesService,
                                   AvailabilityRepository availabilityRepository,
                                   EventRepository eventRepository,
                                   SurveysService surveysService,
-                                  SurveyRepository surveyRepository) {
+                                  SurveyRepository surveyRepository,
+                                  UserRepository userRepository) {
         this.availabilitiesService = availabilitiesService;
         this.availabilityRepository = availabilityRepository;
         this.eventRepository = eventRepository;
         this.surveysService = surveysService;
         this.surveyRepository = surveyRepository;
+        this.userRepository = userRepository;
     }
 
     @Test
@@ -59,19 +65,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto = new AvailabilityDto (
 
@@ -148,19 +142,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                30.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(30f);
 
         AvailabilityDto availabilityDto = new AvailabilityDto (
 
@@ -238,19 +220,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto = new AvailabilityDto (
 
@@ -328,19 +298,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto = new AvailabilityDto (
 
@@ -418,19 +376,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto = new AvailabilityDto (
 
@@ -508,19 +454,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto1 = new AvailabilityDto (
 
@@ -614,19 +548,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto1 = new AvailabilityDto (
 
@@ -704,19 +626,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto1 = new AvailabilityDto (
 
@@ -802,19 +712,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                60.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(60f);
 
         AvailabilityDto availabilityDto1 = new AvailabilityDto (
 
@@ -860,19 +758,7 @@ public class ModifyAvailabilityTest {
 
         /* INITIAL AVAILABILITIES */
 
-        Event event = new Event (
-
-                "eventTest",
-                "test",
-                Date.valueOf("2022-01-01"),
-                3,
-                30.0f,
-                30.0f,
-                0,
-                Date.valueOf("2022-02-02"),
-                Date.valueOf("2022-02-22"));
-
-        Event savedEvent = eventRepository.save(event);
+        Event savedEvent = createEvent(30f);
 
         AvailabilityDto availabilityDto1 = new AvailabilityDto (
 
@@ -917,6 +803,7 @@ public class ModifyAvailabilityTest {
         availabilityRepository.deleteAll();
         eventRepository.deleteAll();
     }
+
     public List<AvailabilityDto> ignoreAvailabilityId(List<AvailabilityDto> availabilityDtoList1) {
 
         for (AvailabilityDto availabilityDto : availabilityDtoList1) {
@@ -925,5 +812,32 @@ public class ModifyAvailabilityTest {
         }
 
         return availabilityDtoList1;
+    }
+
+    private Event createEvent(float surveyDuration) {
+
+        Event event = new Event (
+            "eventTest",
+            "test",
+            Date.valueOf("2022-01-01"),
+            3,
+            surveyDuration,
+            30.0f,
+            0,
+            Date.valueOf("2022-02-02"),
+            Date.valueOf("2022-02-22"),
+            createUser());
+
+        Event savedEvent = eventRepository.save(event);
+
+        return savedEvent;
+    }
+
+    private User createUser() {
+
+        User user = new User();
+        userRepository.save(user);
+
+        return user;
     }
 }

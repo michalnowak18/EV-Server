@@ -74,7 +74,8 @@ public class Event {
     }
 
     public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration,
-                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
+                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate,
+                 User user) {
         this.name = name;
         this.description = description;
         this.endDate = endDate;
@@ -84,6 +85,7 @@ public class Event {
         this.slotsTaken = slotsTaken;
         this.researchStartDate = researchStartDate;
         this.researchEndDate = researchEndDate;
+        this.user = user;
     }
 
     public Event(EventDto eventDto) {
