@@ -1,5 +1,6 @@
 package com.ev.evserver.user;
 
+import com.ev.evserver.recruiter.surveys.SurveysUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,18 @@ public class UsersService {
 	}
 
 	public PasswordDto changeUserPassword(Long id, PasswordDto password) {
+
+		User newUser = userUtils.fetchValidUser(id);
+		newUser.setPassword(passwordEncoder.encode(password.getPassword()));
+		userRepository.save(newUser);
+
+		return password;
+	}
+
+	public PasswordDto resetUserPassword(Long id) {
+
+		PasswordDto password = new PasswordDto();
+		password.setPassword(SurveysUtils.generateCode());
 
 		User newUser = userUtils.fetchValidUser(id);
 		newUser.setPassword(passwordEncoder.encode(password.getPassword()));
