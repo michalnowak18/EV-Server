@@ -9,8 +9,7 @@ import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.events.EventsUtils;
 import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityDto;
-import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -21,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SurveysService {
 
 	private final SurveyRepository surveyRepository;
@@ -30,19 +30,6 @@ public class SurveysService {
 	private final EventsUtils eventsUtils;
 
 	private final AvailabilitiesService availabilitiesService;
-
-	private final InitialAvailabilityRepository initialAvailabilityRepository;
-
-	@Autowired
-	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository,
-						  EventsUtils eventsUtils, AvailabilitiesService availabilitiesService,
-						  InitialAvailabilityRepository initialAvailabilityRepository) {
-		this.surveyRepository = surveyRepository;
-		this.eventRepository = eventRepository;
-		this.eventsUtils = eventsUtils;
-		this.availabilitiesService = availabilitiesService;
-		this.initialAvailabilityRepository = initialAvailabilityRepository;
-	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots, Event event) {
 

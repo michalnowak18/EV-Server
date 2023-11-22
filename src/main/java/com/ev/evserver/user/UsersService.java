@@ -1,22 +1,20 @@
 package com.ev.evserver.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UsersService {
 
 	private final UserRepository userRepository;
 
 	private final UserUtils userUtils;
 
-	@Autowired
-	public UsersService(UserRepository userRepository, UserUtils userUtils) {
-		this.userRepository = userRepository;
-		this.userUtils = userUtils;
-	}
+	private final PasswordEncoder passwordEncoder;
 
 	public List<UserDto> getAllUsers() {
 
@@ -39,5 +37,14 @@ public class UsersService {
 		userRepository.save(user);
 
 		return new UserDto(user);
+	}
+
+	public PasswordDto changeUserPassword(Long id, PasswordDto password) {
+
+		User newUser = userUtils.fetchValidUser(id);
+		newUser.setPassword(passwordEncoder.encode(password.getPassword()));
+		userRepository.save(newUser);
+
+		return password;
 	}
 }
