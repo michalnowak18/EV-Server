@@ -1,5 +1,6 @@
 package com.ev.evserver.authentication;
 
+import com.ev.evserver.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,6 @@ public class AuthenticationDto {
 	private String token;
 
 	private String password;
+
+	private Role role;
 }

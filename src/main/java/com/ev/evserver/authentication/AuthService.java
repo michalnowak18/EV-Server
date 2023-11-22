@@ -38,6 +38,7 @@ public class AuthService {
 		return AuthenticationDto.builder()
 			.token(jwtService.generateToken(user))
 			.password(password)
+			.role(registrationDto.getRole())
 			.build();
 	}
 
@@ -50,6 +51,7 @@ public class AuthService {
 
 		return AuthenticationDto.builder()
 			.token(jwtService.generateToken(user))
+			.role(user.getRole())
 			.build();
 	}
 }

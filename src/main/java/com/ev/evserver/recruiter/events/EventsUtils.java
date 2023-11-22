@@ -15,6 +15,7 @@ public class EventsUtils {
     }
 
     public Event fetchValidEvent(long id) {
+
         Optional<Event> eventOpt = eventRepository.findById(id);
         if (eventOpt.isEmpty()) {
             throw new RuntimeException("Invalid ID");
