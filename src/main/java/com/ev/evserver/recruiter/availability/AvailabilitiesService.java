@@ -9,7 +9,7 @@ import com.ev.evserver.recruiter.surveys.Survey;
 import com.ev.evserver.recruiter.surveys.SurveyDto;
 import com.ev.evserver.recruiter.surveys.SurveyRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AvailabilitiesService {
 
 	private final AvailabilityRepository availabilityRepository;
@@ -28,17 +29,6 @@ public class AvailabilitiesService {
 	private final SurveyRepository surveyRepository;
 
 	private final InitialAvailabilityRepository initialAvailabilityRepository;
-
-
-	@Autowired
-	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils,
-								 SurveyRepository surveyRepository,
-								 InitialAvailabilityRepository initialAvailabilityRepository) {
-		this.availabilityRepository = availabilityRepository;
-		this.eventsUtils = eventsUtils;
-		this.surveyRepository = surveyRepository;
-		this.initialAvailabilityRepository = initialAvailabilityRepository;
-	}
 
 	public List<AvailabilityDto> saveAvailabilityList(List<AvailabilityDto> availabilityDtoList, long eventId) {
 

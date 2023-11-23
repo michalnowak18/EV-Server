@@ -1,18 +1,14 @@
 package com.ev.evserver.recruiter.events;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class EventsUtils {
     EventRepository eventRepository;
-
-    @Autowired
-    public EventsUtils(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
 
     public Event fetchValidEvent(long id) {
 

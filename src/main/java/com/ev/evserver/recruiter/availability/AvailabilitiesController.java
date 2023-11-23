@@ -1,7 +1,7 @@
 package com.ev.evserver.recruiter.availability;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,10 @@ import java.util.List;
 @RequestMapping(value = "/events/{eventId}/availabilities",
 	consumes = MediaType.APPLICATION_JSON_VALUE,
 	produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class AvailabilitiesController {
 
 	private final AvailabilitiesService availabilitiesService;
-
-	@Autowired
-	public AvailabilitiesController(AvailabilitiesService availabilitiesService) {
-		this.availabilitiesService = availabilitiesService;
-	}
 
 	@GetMapping
 	public ResponseEntity<List<AvailabilityDto>> getAll(@PathVariable Long eventId) {
