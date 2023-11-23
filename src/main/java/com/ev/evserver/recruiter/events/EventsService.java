@@ -20,7 +20,9 @@ public class EventsService {
 
 	private final EventsUtils eventsUtils;
 
-	public List<EventDto> getAllEvents() {
+	private final UserUtils userUtils;
+
+	public List<EventDto> getAllEvents(Long userId) {
 
 		User user = userUtils.fetchValidUser(userId);
 		Set<Event> eventList = eventRepository.findByUser(user);
