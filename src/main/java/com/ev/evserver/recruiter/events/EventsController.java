@@ -1,7 +1,7 @@
 package com.ev.evserver.recruiter.events;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,14 @@ import java.util.List;
 @RequestMapping(value = "/users/{userId}/events",
 consumes = MediaType.APPLICATION_JSON_VALUE,
 produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor
 public class EventsController {
 
 	private final EventsService eventsService;
+
+	@Autowired
+	public EventsController(EventsService eventsService) {
+		this.eventsService = eventsService;
+	}
 
 	@GetMapping
 	public ResponseEntity<List<EventDto>> getAll(@PathVariable Long userId) {

@@ -4,14 +4,13 @@ import com.ev.evserver.recruiter.surveys.SurveysUtils;
 import com.ev.evserver.security.JwtService;
 import com.ev.evserver.user.User;
 import com.ev.evserver.user.UserRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
 	private final UserRepository userRepository;
@@ -21,6 +20,14 @@ public class AuthService {
 	private final JwtService jwtService;
 
 	private final AuthenticationManager authenticationManager;
+
+	@Autowired
+	public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.jwtService = jwtService;
+		this.authenticationManager = authenticationManager;
+	}
 
 	public AuthenticationDto register(RegistrationDto registrationDto) {
 

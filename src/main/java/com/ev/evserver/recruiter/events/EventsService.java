@@ -3,7 +3,7 @@ package com.ev.evserver.recruiter.events;
 import com.ev.evserver.recruiter.surveys.SurveysService;
 import com.ev.evserver.user.User;
 import com.ev.evserver.user.UserUtils;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class EventsService {
 
 	private final EventRepository eventRepository;
@@ -21,6 +20,14 @@ public class EventsService {
 	private final EventsUtils eventsUtils;
 
 	private final UserUtils userUtils;
+
+	@Autowired
+	public EventsService(EventRepository eventRepository, SurveysService surveysService, EventsUtils eventsUtils, UserUtils userUtils) {
+		this.eventRepository = eventRepository;
+		this.surveysService = surveysService;
+		this.eventsUtils = eventsUtils;
+		this.userUtils = userUtils;
+	}
 
 	public List<EventDto> getAllEvents(Long userId) {
 

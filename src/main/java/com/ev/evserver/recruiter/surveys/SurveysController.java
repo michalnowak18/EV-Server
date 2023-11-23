@@ -3,7 +3,7 @@ package com.ev.evserver.recruiter.surveys;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventsUtils;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +15,17 @@ import java.util.List;
 @RequestMapping(
 consumes = MediaType.APPLICATION_JSON_VALUE,
 produces = MediaType.APPLICATION_JSON_VALUE)
-@RequiredArgsConstructor
 public class SurveysController {
 
     private final SurveysService surveysService;
 
     private final EventsUtils eventsUtils;
+
+    @Autowired
+    public SurveysController(SurveysService surveysService, EventsUtils eventsUtils) {
+        this.surveysService = surveysService;
+        this.eventsUtils = eventsUtils;
+    }
 
     @GetMapping("/surveys/{code}")
     public ResponseEntity<SurveyDto> getSurvey(@PathVariable String code) {
