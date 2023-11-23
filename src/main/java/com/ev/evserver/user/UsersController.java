@@ -41,9 +41,8 @@ public class UsersController {
 	public ResponseEntity<PasswordDto> changePassword(@RequestBody PasswordDto passwordDto,
 											   @PathVariable Long id) {
 
-		usersService.changeUserPassword(id, passwordDto);
 
-		return new ResponseEntity<>(passwordDto, HttpStatus.OK);
+		return new ResponseEntity<>(usersService.changeUserPassword(id, passwordDto), HttpStatus.OK);
 
 	}
 
