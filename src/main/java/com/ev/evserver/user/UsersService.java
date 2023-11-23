@@ -1,5 +1,9 @@
 package com.ev.evserver.user;
 
+import com.ev.evserver.recruiter.events.Event;
+import com.ev.evserver.recruiter.events.EventDto;
+import com.ev.evserver.recruiter.events.EventRepository;
+import com.ev.evserver.recruiter.events.EventsUtils;
 import com.ev.evserver.recruiter.surveys.SurveysUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +20,17 @@ public class UsersService {
 
 	private final PasswordEncoder passwordEncoder;
 
+	private final EventsUtils eventsUtils;
+	private final EventRepository eventRepository;
+
 	@Autowired
-	public UsersService(UserRepository userRepository, UserUtils userUtils, PasswordEncoder passwordEncoder) {
+	public UsersService(UserRepository userRepository, UserUtils userUtils, PasswordEncoder passwordEncoder,
+	                    EventsUtils eventsUtils, EventRepository eventRepository) {
 		this.userRepository = userRepository;
 		this.userUtils = userUtils;
 		this.passwordEncoder = passwordEncoder;
+		this.eventsUtils = eventsUtils;
+		this.eventRepository = eventRepository;
 	}
 
 	public List<UserDto> getAllUsers() {
@@ -65,5 +75,16 @@ public class UsersService {
 		userRepository.save(newUser);
 
 		return password;
+	}
+
+	public EventDto reassignUser(Long id, Long eventId) {
+
+		Event event = eventsUtils.fetchValidEvent(eventId);
+		User user = userUtils.fetchValidUser(id);
+
+		event.setUser(user);
+		eventRepository.save(event);
+
+		return new EventDto(event);
 	}
 }
