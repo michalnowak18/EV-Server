@@ -1,7 +1,7 @@
 package com.ev.evserver.security;
 
 import com.ev.evserver.user.Role;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,12 +21,17 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration  {
 
 	private final JwtAuthenticationFilter jwtAuthFilter;
 
 	private final AuthenticationProvider authenticationProvider;
+
+	@Autowired
+	public SecurityConfiguration(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
+		this.jwtAuthFilter = jwtAuthFilter;
+		this.authenticationProvider = authenticationProvider;
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -37,11 +42,11 @@ public class SecurityConfiguration  {
 			.cors()
 			.and()
 			.authorizeHttpRequests()
-				.requestMatchers("/auth/**", "/surveys/**").permitAll()
-				.requestMatchers(GET, "/events/{id}", "events/{eventId}/availabilities").permitAll()
-				.requestMatchers(POST, "/events", "/events/**").hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
-				.requestMatchers(PATCH, "/events/**").hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
-				.requestMatchers( "/admin/**").hasAuthority(Role.ADMIN.name())
+				.requestMatchers(ALL_METHODS_WHITE_LIST).permitAll()
+				.requestMatchers(GET, GET_WHITE_LIST).permitAll()
+				.requestMatchers(POST, POST_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers(PATCH, PATCH_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers(PERMITTED_FOR_ADMIN).hasAuthority(Role.ADMIN.name())
 				.anyRequest().authenticated()
 			.and()
 			.sessionManagement()
@@ -64,4 +69,21 @@ public class SecurityConfiguration  {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+
+	private final static String[] ALL_METHODS_WHITE_LIST = new String[] {
+		"/auth/**", "/surveys/**"};
+
+	private final static String[] GET_WHITE_LIST = new String[] {
+		"users/{userId}/events/{id}",
+		"events/{eventId}/availabilities"};
+
+	private final static String[] POST_PERMITTED_FOR_RECRUITER_AND_ADMIN = new String[] {
+		"users/{userId}/events",
+		"users/{userId}/events/**"};
+
+	private final static String[] PATCH_PERMITTED_FOR_RECRUITER_AND_ADMIN = new String[] {
+		"users/{userId}/events/**"};
+
+	private final static String[] PERMITTED_FOR_ADMIN = new String[] {
+		"/admin/**"};
 }

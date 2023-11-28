@@ -2,12 +2,14 @@ package com.ev.evserver.recruiter.events;
 
 import com.ev.evserver.recruiter.availability.Availability;
 import com.ev.evserver.recruiter.surveys.Survey;
+import com.ev.evserver.user.User;
 import com.google.common.base.Objects;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.sql.Date;
 import java.util.Set;
 
@@ -64,11 +66,16 @@ public class Event {
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Survey> surveys;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_user", nullable = false)
+    private User user;
+
     public Event() {
     }
 
     public Event(String name, String description, Date endDate, Integer maxUsers, Float surveyDuration,
-                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate) {
+                 Float surveyBreakTime, Integer slotsTaken, Date researchStartDate, Date researchEndDate,
+                 User user) {
         this.name = name;
         this.description = description;
         this.endDate = endDate;
@@ -78,6 +85,7 @@ public class Event {
         this.slotsTaken = slotsTaken;
         this.researchStartDate = researchStartDate;
         this.researchEndDate = researchEndDate;
+        this.user = user;
     }
 
     public Event(EventDto eventDto) {

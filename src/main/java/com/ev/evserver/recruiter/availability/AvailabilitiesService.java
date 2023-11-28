@@ -29,11 +29,8 @@ public class AvailabilitiesService {
 
 	private final InitialAvailabilityRepository initialAvailabilityRepository;
 
-
 	@Autowired
-	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils,
-								 SurveyRepository surveyRepository,
-								 InitialAvailabilityRepository initialAvailabilityRepository) {
+	public AvailabilitiesService(AvailabilityRepository availabilityRepository, EventsUtils eventsUtils, SurveyRepository surveyRepository, InitialAvailabilityRepository initialAvailabilityRepository) {
 		this.availabilityRepository = availabilityRepository;
 		this.eventsUtils = eventsUtils;
 		this.surveyRepository = surveyRepository;

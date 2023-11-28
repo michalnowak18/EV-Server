@@ -9,7 +9,6 @@ import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventRepository;
 import com.ev.evserver.recruiter.events.EventsUtils;
 import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityDto;
-import com.ev.evserver.recruiter.initialAvailability.InitialAvailabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +30,12 @@ public class SurveysService {
 
 	private final AvailabilitiesService availabilitiesService;
 
-	private final InitialAvailabilityRepository initialAvailabilityRepository;
-
 	@Autowired
-	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository,
-						  EventsUtils eventsUtils, AvailabilitiesService availabilitiesService,
-						  InitialAvailabilityRepository initialAvailabilityRepository) {
+	public SurveysService(SurveyRepository surveyRepository, EventRepository eventRepository, EventsUtils eventsUtils, AvailabilitiesService availabilitiesService) {
 		this.surveyRepository = surveyRepository;
 		this.eventRepository = eventRepository;
 		this.eventsUtils = eventsUtils;
 		this.availabilitiesService = availabilitiesService;
-		this.initialAvailabilityRepository = initialAvailabilityRepository;
 	}
 
 	public List<Survey> saveSurveyWithGeneratedSlots(int numberOfSlots, Event event) {

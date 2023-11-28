@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/events",
+@RequestMapping(value = "/users/{userId}/events",
 consumes = MediaType.APPLICATION_JSON_VALUE,
 produces = MediaType.APPLICATION_JSON_VALUE)
 public class EventsController {
@@ -23,25 +23,23 @@ public class EventsController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<EventDto>> getAll() {
-		return new ResponseEntity<>(eventsService.getAllEvents(), HttpStatus.OK);
+	public ResponseEntity<List<EventDto>> getAll(@PathVariable Long userId) {
+		return new ResponseEntity<>(eventsService.getAllEvents(userId), HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<EventDto> get(@PathVariable Long id) {
+
 		return new ResponseEntity<>(eventsService.getEvent(id), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto) {
+	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto, @PathVariable Long userId) {
 
-		EventDto newEventDto = eventsService.saveEvent(eventDto);
+		EventDto newEventDto = eventsService.saveEvent(eventDto, userId);
 
-		if (newEventDto != null) {
-			return new ResponseEntity<>(newEventDto, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(newEventDto, HttpStatus.OK);
 
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 	@PatchMapping(path = "/{id}")

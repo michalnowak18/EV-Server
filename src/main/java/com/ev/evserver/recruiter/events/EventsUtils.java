@@ -7,6 +7,7 @@ import java.util.Optional;
 
 @Component
 public class EventsUtils {
+
     EventRepository eventRepository;
 
     @Autowired
