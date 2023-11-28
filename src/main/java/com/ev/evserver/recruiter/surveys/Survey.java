@@ -1,5 +1,6 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.consent.Consent;
 import com.ev.evserver.recruiter.events.Event;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import static com.ev.evserver.recruiter.surveys.SurveyState.UNUSED;
 
@@ -33,6 +35,11 @@ public class Survey {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_event", nullable = false)
     private Event event;
+
+    @ManyToMany
+    @JoinTable(name = "survey_consents", joinColumns = @JoinColumn(name = "survey_id"),
+            inverseJoinColumns = @JoinColumn(name = "consent_id"))
+    private Set<Consent> consents;
 
     public Survey() {
     }
