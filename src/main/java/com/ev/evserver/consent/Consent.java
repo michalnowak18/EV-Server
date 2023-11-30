@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,8 +18,8 @@ import java.util.Set;
 public class Consent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "consent_id", nullable = false)
+    private Long consent_id;
 
     @NotBlank(message = "Podaj zawartość zgody")
     @Column(name = "content")
@@ -32,6 +32,14 @@ public class Consent {
     @JoinColumn(name = "fk_event", nullable = false)
     private Event event;
 
-    @ManyToMany(mappedBy = "consents")
-    private Set<Survey> surveys;
+    @ManyToMany(targetEntity = Survey.class,
+            cascade = CascadeType.ALL)
+    @JoinTable(name = "survey_consents", joinColumns = { @JoinColumn(name = "consent_id") },
+            inverseJoinColumns = { @JoinColumn(name = "id") })
+    List<Survey> collectionOfSurveys;
+
+    public Consent(ConsentDto consentDto) {
+        this.content = consentDto.getContent();
+        this.isMandatory = consentDto.isMandatory();
+    }
 }

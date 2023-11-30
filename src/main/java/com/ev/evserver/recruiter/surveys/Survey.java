@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 import static com.ev.evserver.recruiter.surveys.SurveyState.UNUSED;
 
@@ -36,10 +36,12 @@ public class Survey {
     @JoinColumn(name = "fk_event", nullable = false)
     private Event event;
 
-    @ManyToMany
-    @JoinTable(name = "survey_consents", joinColumns = @JoinColumn(name = "survey_id"),
-            inverseJoinColumns = @JoinColumn(name = "consent_id"))
-    private Set<Consent> consents;
+//    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
+//    private Collection<SurveyConsents> consents = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "collectionOfSurveys",
+            cascade = CascadeType.ALL)
+    private List<Consent> consents;
 
     public Survey() {
     }
