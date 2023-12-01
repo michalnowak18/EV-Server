@@ -34,10 +34,22 @@ public class ConsentService {
         this.surveysUtils = surveysUtils;
     }
 
-    public List<ConsentDto> getAll(Long eventId) {
+    public List<ConsentDto> getAllByEvent(Long eventId) {
 
         Event event = eventsUtils.fetchValidEvent(eventId);
         Set<Consent> consents = consentRepository.findByEvent(event);
+        List<ConsentDto> consentDtoList = consents
+                .stream()
+                .map(ConsentDto::new)
+                .collect(Collectors.toList());
+
+        return consentDtoList;
+    }
+
+    public List<ConsentDto> getAllBySurvey(Long surveyId) {
+
+        Survey survey = surveysUtils.fetchValidSurvey(surveyId);
+        List<Consent> consents = survey.getConsents();
         List<ConsentDto> consentDtoList = consents
                 .stream()
                 .map(ConsentDto::new)

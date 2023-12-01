@@ -24,9 +24,15 @@ public class ConsentController {
     }
 
     @GetMapping("/consents/events/{eventId}")
-    public ResponseEntity<List<ConsentDto>> getAll(@PathVariable Long eventId) {
+    public ResponseEntity<List<ConsentDto>> getAllByEvent(@PathVariable Long eventId) {
 
-        return new ResponseEntity<>(consentService.getAll(eventId), HttpStatus.OK);
+        return new ResponseEntity<>(consentService.getAllByEvent(eventId), HttpStatus.OK);
+    }
+
+    @GetMapping("/consents/surveys/{surveyId}")
+    public ResponseEntity<List<ConsentDto>> getAllBySurvey(@PathVariable Long surveyId) {
+
+        return new ResponseEntity<>(consentService.getAllBySurvey(surveyId), HttpStatus.OK);
     }
 
     @PostMapping("/consents/events/{eventId}")

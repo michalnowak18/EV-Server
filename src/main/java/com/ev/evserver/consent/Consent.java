@@ -35,7 +35,7 @@ public class Consent {
     @ManyToMany(targetEntity = Survey.class,
             cascade = CascadeType.ALL)
     @JoinTable(name = "survey_consents", joinColumns = { @JoinColumn(name = "consent_id") },
-            inverseJoinColumns = { @JoinColumn(name = "id") })
+            inverseJoinColumns = { @JoinColumn(name = "survey_id") })
     List<Survey> collectionOfSurveys;
 
     public Consent(ConsentDto consentDto) {
