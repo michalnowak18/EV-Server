@@ -1,13 +1,20 @@
 package com.ev.evserver.consent;
 
 import com.ev.evserver.recruiter.availability.ValidList;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -33,6 +40,34 @@ public class ConsentController {
     public ResponseEntity<List<ConsentDto>> getAllBySurvey(@PathVariable Long surveyId) {
 
         return new ResponseEntity<>(consentService.getAllBySurvey(surveyId), HttpStatus.OK);
+    }
+
+    @GetMapping("/export")
+    public void exportAllConsentsToCSV(HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm:ss");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=consents_" + formatter.format(currentDateTime) + ".csv";
+        response.setHeader(headerKey, headerValue);
+
+        List<ConsentDto> listOfConsents = consentService.listAllConsents();
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"Consent ID", "Content", "Mandatory"};
+        String[] nameMapping = {"id", "content", "mandatory"};
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (ConsentDto consentDto : listOfConsents) {
+
+            csvWriter.write(consentDto, nameMapping);
+        }
+
+        csvWriter.close();
+
     }
 
     @PostMapping("/events/{eventId}")

@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ev.evserver.recruiter.surveys.SurveyState.UNUSED;
 
@@ -55,4 +56,7 @@ public class Survey {
         this.surveyState = surveyDto.getSurveyState();
     }
 
+    public List<Long> getConsentsIds() {
+        return consents.stream().map(a -> a.getConsent_id()).collect(Collectors.toList());
+    }
 }

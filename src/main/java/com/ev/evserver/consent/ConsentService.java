@@ -58,6 +58,17 @@ public class ConsentService {
         return consentDtoList;
     }
 
+    public List<ConsentDto> listAllConsents() {
+
+        List<Consent> consents = consentRepository.findAll();
+        List<ConsentDto> consentDtoList = consents
+                .stream()
+                .map(ConsentDto::new)
+                .collect(Collectors.toList());
+
+        return consentDtoList;
+    }
+
     public List<ConsentDto> saveConsentList(List<ConsentDto> consentDtoList, Long eventId) {
 
         Event event = eventsUtils.fetchValidEvent(eventId);
