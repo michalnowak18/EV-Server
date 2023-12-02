@@ -71,7 +71,7 @@ public class SecurityConfiguration  {
 	}
 
 	private final static String[] ALL_METHODS_WHITE_LIST = new String[] {
-		"/auth/**", "/surveys/**"};
+		"/auth/**", "/surveys/**", "consents/**"};
 
 	private final static String[] GET_WHITE_LIST = new String[] {
 		"users/{userId}/events/{id}",
@@ -79,7 +79,8 @@ public class SecurityConfiguration  {
 
 	private final static String[] POST_PERMITTED_FOR_RECRUITER_AND_ADMIN = new String[] {
 		"users/{userId}/events",
-		"users/{userId}/events/**"};
+		"users/{userId}/events/**,",
+		"consents/events/{eventId}"};
 
 	private final static String[] PATCH_PERMITTED_FOR_RECRUITER_AND_ADMIN = new String[] {
 		"users/{userId}/events/**"};
