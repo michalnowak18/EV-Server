@@ -22,7 +22,7 @@ public class Consent {
     private Long consent_id;
 
     @NotBlank(message = "Podaj zawartość zgody")
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "is_mandatory")
