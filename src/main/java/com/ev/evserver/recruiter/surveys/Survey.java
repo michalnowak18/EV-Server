@@ -36,9 +36,6 @@ public class Survey {
     @JoinColumn(name = "fk_event", nullable = false)
     private Event event;
 
-//    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
-//    private Collection<SurveyConsents> consents = new ArrayList<>();
-
     @ManyToMany(mappedBy = "collectionOfSurveys",
             cascade = CascadeType.ALL)
     private List<Consent> consents;

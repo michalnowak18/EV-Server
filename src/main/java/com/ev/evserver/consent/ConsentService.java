@@ -82,7 +82,7 @@ public class ConsentService {
         return new ConsentDto(consentRepository.save(consent));
     }
 
-        public List<Long> saveConsentListForSurvey(List<Long> consentIdList, Long surveyId) {
+    public List<Long> saveConsentListForSurvey(List<Long> consentIdList, Long surveyId) {
 
         Survey survey = surveysUtils.fetchValidSurvey(surveyId);
 
