@@ -1,5 +1,6 @@
 package com.ev.evserver.recruiter.events;
 
+import com.ev.evserver.consent.Consent;
 import com.ev.evserver.recruiter.availability.Availability;
 import com.ev.evserver.recruiter.surveys.Survey;
 import com.ev.evserver.user.User;
@@ -65,6 +66,9 @@ public class Event {
 
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
     private Set<Survey> surveys;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+    private Set<Consent> consents;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user", nullable = false)
