@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/events",
+@RequestMapping(
 consumes = MediaType.APPLICATION_JSON_VALUE,
 produces = MediaType.APPLICATION_JSON_VALUE)
 public class EventsController {
@@ -22,18 +22,25 @@ public class EventsController {
 		this.eventsService = eventsService;
 	}
 
-	@GetMapping
-	public ResponseEntity<List<EventDto>> getAll(@PathVariable Long userId) {
-		return new ResponseEntity<>(eventsService.getAllEvents(userId), HttpStatus.OK);
+	@GetMapping("/events")
+	public ResponseEntity<List<EventDto>> getAll() {
+
+		return new ResponseEntity<>(eventsService.getAllEvents(), HttpStatus.OK);
 	}
 
-	@GetMapping(path = "/{id}")
+	@GetMapping("/users/{userId}/events")
+	public ResponseEntity<List<EventDto>> getAllByUser(@PathVariable Long userId) {
+
+		return new ResponseEntity<>(eventsService.getAllEventsByUser(userId), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/users/{userId}/events/{id}")
 	public ResponseEntity<EventDto> get(@PathVariable Long id) {
 
 		return new ResponseEntity<>(eventsService.getEvent(id), HttpStatus.OK);
 	}
 
-	@PostMapping
+	@PostMapping("/users/{userId}/events")
 	public ResponseEntity<EventDto> save(@Valid @RequestBody EventDto eventDto, @PathVariable Long userId) {
 
 		EventDto newEventDto = eventsService.saveEvent(eventDto, userId);
@@ -42,7 +49,7 @@ public class EventsController {
 
 	}
 
-	@PatchMapping(path = "/{id}")
+	@PatchMapping(path = "/users/{userId}/events/{id}")
 	public ResponseEntity<Object> modifyEvent(@RequestBody EventDto eventDto,
 												@PathVariable Long id) {
 
