@@ -19,4 +19,6 @@ public class AuthenticationDto {
 	private Role role;
 
 	private Long userId;
+
+	private String name;
 }

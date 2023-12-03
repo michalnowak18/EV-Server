@@ -47,6 +47,7 @@ public class AuthService {
 			.password(password)
 			.role(registrationDto.getRole())
 			.userId(savedUser.getId())
+			.name(savedUser.getName())
 			.build();
 	}
 
@@ -61,6 +62,7 @@ public class AuthService {
 			.token(jwtService.generateToken(user))
 			.role(user.getRole())
 			.userId(user.getId())
+			.name(user.getName())
 			.build();
 	}
 }
