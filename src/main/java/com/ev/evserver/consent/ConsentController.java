@@ -43,7 +43,8 @@ public class ConsentController {
     }
 
     @GetMapping("/export")
-    public void exportAllConsentsToCSV(HttpServletResponse response) throws IOException {
+    public void exportAllConsentsToCSV(@PathVariable Long eventId,
+                                       HttpServletResponse response) throws IOException {
 
         response.setContentType("text/csv");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm:ss");
@@ -52,10 +53,11 @@ public class ConsentController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=consents_" + formatter.format(currentDateTime) + ".csv";
         response.setHeader(headerKey, headerValue);
+        response.setHeader(headerKey, "Access-Control-Expose-Headers");
 
-        List<ConsentDto> listOfConsents = consentService.listAllConsents();
+        List<ConsentDto> listOfConsents = consentService.getAllByEvent(eventId);
 
-        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
         String[] csvHeader = {"Consent ID", "Content", "Mandatory"};
         String[] nameMapping = {"id", "content", "mandatory"};
 

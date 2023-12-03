@@ -56,7 +56,8 @@ public class SurveysController {
     }
 
     @GetMapping("/surveys/export")
-    public void exportAllSurveysToCSV(HttpServletResponse response) throws IOException {
+    public void exportAllSurveysToCSV(@PathVariable Long eventId,
+                                      HttpServletResponse response) throws IOException {
 
         response.setContentType("text/csv");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm:ss");
@@ -65,10 +66,11 @@ public class SurveysController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=surveys_" + formatter.format(currentDateTime) + ".csv";
         response.setHeader(headerKey, headerValue);
+        response.setHeader(headerKey, "Access-Control-Expose-Headers");
 
-        List<SurveyDto> listOfSurveys = surveysService.listAllSurveys();
+        List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
 
-        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
         String[] csvHeader = {"Survey ID", "Code", "Date", "Event ID", "Event Name", "State", "Consents"};
         String[] nameMapping = {"id", "code", "date", "eventId", "eventName", "surveyState", "consentsIds"};
 

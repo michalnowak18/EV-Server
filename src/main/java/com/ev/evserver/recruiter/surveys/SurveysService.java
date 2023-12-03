@@ -151,18 +151,6 @@ public class SurveysService {
 		return surveyDtoList;
 	}
 
-	public List<SurveyDto> listAllSurveys() {
-
-		List<Survey> surveys = surveyRepository.findAll();
-
-		List<SurveyDto> surveyDtoList = surveys
-				.stream()
-				.map(SurveyDto::new)
-				.collect(Collectors.toList());
-
-		return surveyDtoList;
-	}
-
 	private boolean isHourTaken(Timestamp newSurveyDate, long eventId) {
 
 		List<SurveyDto> surveyDtoList = findByEvent(eventId);
