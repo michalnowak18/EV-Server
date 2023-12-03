@@ -2,13 +2,20 @@ package com.ev.evserver.recruiter.surveys;
 
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventsUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -45,6 +52,36 @@ public class SurveysController {
         List<SurveyDto> surveyDto = surveysService.findByEvent(eventId);
 
         return new ResponseEntity<>(surveyDto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/surveys/export/{eventId}")
+    public void exportAllSurveysToCSV(@PathVariable Long eventId,
+                                      HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm:ss");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=surveys_" + formatter.format(currentDateTime) + ".csv";
+        response.setHeader(headerKey, headerValue);
+        response.setHeader("Access-Control-Expose-Headers", headerKey);
+
+        List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
+        String[] csvHeader = {"Survey ID", "Code", "Date", "Event ID", "Event Name", "State", "Consents"};
+        String[] nameMapping = {"id", "code", "date", "eventId", "eventName", "surveyState", "consentsIds"};
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (SurveyDto surveyDto : listOfSurveys) {
+
+            csvWriter.write(surveyDto, nameMapping);
+        }
+
+        csvWriter.close();
 
     }
 

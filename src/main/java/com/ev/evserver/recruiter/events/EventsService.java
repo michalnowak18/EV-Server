@@ -29,7 +29,14 @@ public class EventsService {
 		this.userUtils = userUtils;
 	}
 
-	public List<EventDto> getAllEvents(Long userId) {
+	public List<EventDto> getAllEvents() {
+
+		List<Event> eventList = eventRepository.findAll();
+
+		return eventList.stream().map(EventDto::new).collect(Collectors.toList());
+	}
+
+	public List<EventDto> getAllEventsByUser(Long userId) {
 
 		User user = userUtils.fetchValidUser(userId);
 		Set<Event> eventList = eventRepository.findByUser(user);
