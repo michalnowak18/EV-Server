@@ -42,7 +42,7 @@ public class ConsentController {
         return new ResponseEntity<>(consentService.getAllBySurvey(surveyId), HttpStatus.OK);
     }
 
-    @GetMapping("/export")
+    @GetMapping("/export/{eventId}")
     public void exportAllConsentsToCSV(@PathVariable Long eventId,
                                        HttpServletResponse response) throws IOException {
 
@@ -53,7 +53,7 @@ public class ConsentController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=consents_" + formatter.format(currentDateTime) + ".csv";
         response.setHeader(headerKey, headerValue);
-        response.setHeader(headerKey, "Access-Control-Expose-Headers");
+        response.setHeader("Access-Control-Expose-Headers", headerKey);
 
         List<ConsentDto> listOfConsents = consentService.getAllByEvent(eventId);
 

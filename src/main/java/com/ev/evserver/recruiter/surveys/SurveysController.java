@@ -55,7 +55,7 @@ public class SurveysController {
 
     }
 
-    @GetMapping("/surveys/export")
+    @GetMapping("/surveys/export/{eventId}")
     public void exportAllSurveysToCSV(@PathVariable Long eventId,
                                       HttpServletResponse response) throws IOException {
 
@@ -66,7 +66,7 @@ public class SurveysController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=surveys_" + formatter.format(currentDateTime) + ".csv";
         response.setHeader(headerKey, headerValue);
-        response.setHeader(headerKey, "Access-Control-Expose-Headers");
+        response.setHeader("Access-Control-Expose-Headers", headerKey);
 
         List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
 
