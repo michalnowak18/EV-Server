@@ -46,6 +46,7 @@ public class SecurityConfiguration  {
 				.requestMatchers(GET, GET_WHITE_LIST).permitAll()
 				.requestMatchers(POST, POST_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
 				.requestMatchers(PATCH, PATCH_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers(ADMIN_EXCLUSIONS).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name(), Role.READONLY.name())
 				.requestMatchers(PERMITTED_FOR_ADMIN).hasAuthority(Role.ADMIN.name())
 				.anyRequest().authenticated()
 			.and()
@@ -87,4 +88,7 @@ public class SecurityConfiguration  {
 
 	private final static String[] PERMITTED_FOR_ADMIN = new String[] {
 		"/admin/**"};
+
+	private final static String[] ADMIN_EXCLUSIONS = new String[] {
+		"/admin/users/{id}/changePassword"};
 }

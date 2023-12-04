@@ -56,13 +56,20 @@ public class UsersService {
 		return new UserDto(user);
 	}
 
-	public PasswordDto changeUserPassword(Long id, PasswordDto password) {
+	public PasswordDto changeUserPassword(Long id, PasswordDto passwordDto) {
 
 		User newUser = userUtils.fetchValidUser(id);
-		newUser.setPassword(passwordEncoder.encode(password.getPassword()));
-		userRepository.save(newUser);
+		if (passwordEncoder.matches(passwordDto.getOldPassword(), newUser.getPassword())) {
 
-		return password;
+			newUser.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
+			userRepository.save(newUser);
+
+			return passwordDto;
+
+		} else {
+			return null;
+		}
+
 	}
 
 	public PasswordDto resetUserPassword(Long id) {

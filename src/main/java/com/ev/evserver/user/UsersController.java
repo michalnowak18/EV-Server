@@ -46,11 +46,13 @@ public class UsersController {
 	public ResponseEntity<PasswordDto> changePassword(@RequestBody PasswordDto passwordDto,
 											   @PathVariable Long id) {
 
+		PasswordDto passwordDtoResponse = usersService.changeUserPassword(id, passwordDto);
+		if (passwordDtoResponse != null) {
+			return new ResponseEntity<>(passwordDtoResponse, HttpStatus.OK);
+		}
 
-		return new ResponseEntity<>(usersService.changeUserPassword(id, passwordDto), HttpStatus.OK);
-
+		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 	}
-
 
 	@PatchMapping(path = "/{id}/resetPassword")
 	public ResponseEntity<PasswordDto> resetPassword(@PathVariable Long id) {

@@ -1,6 +1,7 @@
 package com.ev.evserver.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,12 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity<AuthenticationDto> register(@RequestBody RegistrationDto registrationDto) {
 
-		return ResponseEntity.ok(authService.register(registrationDto));
+		AuthenticationDto authenticationDto = authService.register(registrationDto);
+		if (authenticationDto != null) {
+			return ResponseEntity.ok(authenticationDto);
+		}
+
+		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@PostMapping("/login")
