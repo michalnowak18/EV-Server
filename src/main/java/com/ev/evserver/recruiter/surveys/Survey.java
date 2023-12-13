@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,11 @@ public class Survey {
     }
 
     public List<Long> getConsentsIds() {
-        return consents.stream().map(a -> a.getConsent_id()).collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(consents)) {
+            return consents.stream().map(a -> a.getConsent_id()).collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
     }
 }
