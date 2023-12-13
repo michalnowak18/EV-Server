@@ -36,7 +36,7 @@ public class SecurityConfiguration  {
 
 	@Bean
 	@Profile("prod")
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+	public SecurityFilterChain securityFilterChainProd(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity
 			.csrf()
@@ -57,6 +57,19 @@ public class SecurityConfiguration  {
 			.and()
 			.authenticationProvider(authenticationProvider)
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return httpSecurity.build();
+	}
+
+	@Bean
+	@Profile("test")
+	public SecurityFilterChain securityFilterChainTest(HttpSecurity httpSecurity) throws Exception {
+
+		httpSecurity
+			.csrf()
+			.disable()
+			.cors()
+			.disable();
 
 		return httpSecurity.build();
 	}
