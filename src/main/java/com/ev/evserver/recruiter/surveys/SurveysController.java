@@ -65,11 +65,18 @@ public class SurveysController {
 
         List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
         List<ConsentDto> consentDtoList = consentService.getAllByEvent(eventId);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH_mm_ss");
         LocalDateTime currentDateTime = LocalDateTime.now();
 
-        PrintWriter writer = new PrintWriter("event_%s_%s.csv".formatted(eventId, formatter.format(currentDateTime)));
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=event_" + eventId + "_" + formatter.format(currentDateTime) + ".csv";
+
+        response.setHeader(headerKey, headerValue);
+        response.setHeader("Access-Control-Expose-Headers", headerKey);
+        response.setContentType("text/csv");
+
+        PrintWriter writer = response.getWriter();
         List<String> row = new ArrayList<>();
 
         Integer numberOfConsents = consentDtoList.size();
@@ -86,7 +93,7 @@ public class SurveysController {
             row.add("Zgoda %s".formatted(i + 1));
             row.add("Zaakceptowana");
         }
-        writer.println(String.join(",", row));
+        writer.println(String.join(";", row));
         row.clear();
 
         for (SurveyDto surveyDto : listOfSurveys) {
@@ -107,7 +114,7 @@ public class SurveysController {
                 row.add(consentService.findAcceptedConsents(consentDto.getId(), surveyDto.getId()));
             }
 
-            writer.println(String.join(",", row));
+            writer.println(String.join(";", row));
             row.clear();
         }
 
