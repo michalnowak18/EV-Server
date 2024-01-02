@@ -96,4 +96,16 @@ public class ConsentService {
 
         return consentIdList;
     }
+
+    public String findAcceptedConsents(Long consentId, Long surveyId) {
+
+        Consent consent = consentsUtils.fetchValidConsent(consentId);
+        Survey survey = surveysUtils.fetchValidSurvey(surveyId);
+
+        if (consent.getCollectionOfSurveys().contains(survey)) {
+            return "tak";
+        }
+
+        return "nie";
+    }
 }

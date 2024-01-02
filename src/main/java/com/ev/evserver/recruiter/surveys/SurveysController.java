@@ -1,5 +1,7 @@
 package com.ev.evserver.recruiter.surveys;
 
+import com.ev.evserver.consent.ConsentDto;
+import com.ev.evserver.consent.ConsentService;
 import com.ev.evserver.recruiter.events.Event;
 import com.ev.evserver.recruiter.events.EventsUtils;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,13 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.io.ICsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,10 +29,13 @@ public class SurveysController {
 
     private final EventsUtils eventsUtils;
 
+    private final ConsentService consentService;
+
     @Autowired
-    public SurveysController(SurveysService surveysService, EventsUtils eventsUtils) {
+    public SurveysController(SurveysService surveysService, EventsUtils eventsUtils, ConsentService consentService) {
         this.surveysService = surveysService;
         this.eventsUtils = eventsUtils;
+        this.consentService = consentService;
     }
 
     @GetMapping("/surveys/{code}")
@@ -59,30 +63,62 @@ public class SurveysController {
     public void exportAllSurveysToCSV(@PathVariable Long eventId,
                                       HttpServletResponse response) throws IOException {
 
-        response.setContentType("text/csv");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH:mm:ss");
+        List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
+        List<ConsentDto> consentDtoList = consentService.getAllByEvent(eventId);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd_HH_mm_ss");
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=surveys_" + formatter.format(currentDateTime) + ".csv";
+        String headerValue = "attachment; filename=event_" + eventId + "_" + formatter.format(currentDateTime) + ".csv";
+
         response.setHeader(headerKey, headerValue);
         response.setHeader("Access-Control-Expose-Headers", headerKey);
+        response.setContentType("text/csv");
 
-        List<SurveyDto> listOfSurveys = surveysService.findByEvent(eventId);
+        PrintWriter writer = response.getWriter();
+        List<String> row = new ArrayList<>();
 
-        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
-        String[] csvHeader = {"Survey ID", "Code", "Date", "Event ID", "Event Name", "State", "Consents"};
-        String[] nameMapping = {"id", "code", "date", "eventId", "eventName", "surveyState", "consentsIds"};
+        Integer numberOfConsents = consentDtoList.size();
 
-        csvWriter.writeHeader(csvHeader);
+        // add header
+
+        row.add("ID spotkania");
+        row.add("Kod spotkania");
+        row.add("Data spotkania");
+        row.add("Nazwa eventu");
+        row.add("Stan spotkania");
+
+        for (int i = 0; i < numberOfConsents; i++) {
+            row.add("Zgoda %s".formatted(i + 1));
+            row.add("Zaakceptowana");
+        }
+        writer.println(String.join(";", row));
+        row.clear();
 
         for (SurveyDto surveyDto : listOfSurveys) {
 
-            csvWriter.write(surveyDto, nameMapping);
+            // add data
+            row.add(surveyDto.getId().toString());
+            row.add(surveyDto.getCode());
+            if (surveyDto.getDate() != null) {
+                row.add(surveyDto.getDate().toString());
+            } else {
+                row.add("");
+            }
+            row.add(surveyDto.getEventName());
+            row.add(surveyDto.getSurveyState().toString());
+
+            for (ConsentDto consentDto : consentDtoList) {
+                row.add(consentDto.getContent());
+                row.add(consentService.findAcceptedConsents(consentDto.getId(), surveyDto.getId()));
+            }
+
+            writer.println(String.join(";", row));
+            row.clear();
         }
 
-        csvWriter.close();
-
+        writer.close();
     }
 
     @PatchMapping("/surveys/{id}")

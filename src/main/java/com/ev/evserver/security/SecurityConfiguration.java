@@ -4,6 +4,7 @@ import com.ev.evserver.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,7 +35,8 @@ public class SecurityConfiguration  {
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+	@Profile("prod")
+	public SecurityFilterChain securityFilterChainProd(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity
 			.csrf()
@@ -46,6 +48,7 @@ public class SecurityConfiguration  {
 				.requestMatchers(GET, GET_WHITE_LIST).permitAll()
 				.requestMatchers(POST, POST_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
 				.requestMatchers(PATCH, PATCH_PERMITTED_FOR_RECRUITER_AND_ADMIN).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name())
+				.requestMatchers(ADMIN_EXCLUSIONS).hasAnyAuthority(Role.RECRUITER.name(), Role.ADMIN.name(), Role.READONLY.name())
 				.requestMatchers(PERMITTED_FOR_ADMIN).hasAuthority(Role.ADMIN.name())
 				.anyRequest().authenticated()
 			.and()
@@ -54,6 +57,19 @@ public class SecurityConfiguration  {
 			.and()
 			.authenticationProvider(authenticationProvider)
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return httpSecurity.build();
+	}
+
+	@Bean
+	@Profile("test")
+	public SecurityFilterChain securityFilterChainTest(HttpSecurity httpSecurity) throws Exception {
+
+		httpSecurity
+			.csrf()
+			.disable()
+			.cors()
+			.disable();
 
 		return httpSecurity.build();
 	}
@@ -87,4 +103,7 @@ public class SecurityConfiguration  {
 
 	private final static String[] PERMITTED_FOR_ADMIN = new String[] {
 		"/admin/**"};
+
+	private final static String[] ADMIN_EXCLUSIONS = new String[] {
+		"/admin/users/{id}/changePassword"};
 }

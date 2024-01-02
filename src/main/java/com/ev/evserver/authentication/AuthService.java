@@ -31,23 +31,30 @@ public class AuthService {
 
 	public AuthenticationDto register(RegistrationDto registrationDto) {
 
-		String password = SurveysUtils.generateCode();
+		if (userRepository.findByEmail(registrationDto.getEmail()).isEmpty()) {
 
-		User user = User.builder()
-			.email(registrationDto.getEmail())
-			.name(registrationDto.getName())
-			.password(passwordEncoder.encode(password))
-			.role(registrationDto.getRole())
-			.build();
+			String password = SurveysUtils.generateCode();
 
-		User savedUser = userRepository.save(user);
+			User user = User.builder()
+				.email(registrationDto.getEmail())
+				.name(registrationDto.getName())
+				.password(passwordEncoder.encode(password))
+				.role(registrationDto.getRole())
+				.build();
 
-		return AuthenticationDto.builder()
-			.token(jwtService.generateToken(user))
-			.password(password)
-			.role(registrationDto.getRole())
-			.userId(savedUser.getId())
-			.build();
+			User savedUser = userRepository.save(user);
+
+			return AuthenticationDto.builder()
+				.token(jwtService.generateToken(user))
+				.password(password)
+				.role(registrationDto.getRole())
+				.userId(savedUser.getId())
+				.name(savedUser.getName())
+				.build();
+
+		} else {
+			return null;
+		}
 	}
 
 	public AuthenticationDto login(LoginDto loginDto) {
@@ -61,6 +68,7 @@ public class AuthService {
 			.token(jwtService.generateToken(user))
 			.role(user.getRole())
 			.userId(user.getId())
+			.name(user.getName())
 			.build();
 	}
 }
