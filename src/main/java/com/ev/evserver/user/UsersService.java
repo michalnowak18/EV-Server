@@ -50,6 +50,12 @@ public class UsersService {
 	public UserDto changeUserStatus(long id, boolean isToBeBlocked) {
 
 		User user = userUtils.fetchValidUser(id);
+
+		if (isToBeBlocked && user.getRole().equals(Role.ADMIN) && getActiveAdminsCount() <= 1) {
+
+			return new UserDto(user);
+		}
+
 		user.setBlocked(isToBeBlocked);
 		userRepository.save(user);
 
@@ -93,5 +99,12 @@ public class UsersService {
 		eventRepository.save(event);
 
 		return new EventDto(event);
+	}
+
+	private Long getActiveAdminsCount() {
+
+		List<User> users = userRepository.findAll();
+
+		return users.stream().filter(user -> user.getRole().equals(Role.ADMIN) && !user.isBlocked()).count();
 	}
 }
