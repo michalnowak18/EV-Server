@@ -51,7 +51,7 @@ public class UsersService {
 
 		User user = userUtils.fetchValidUser(id);
 
-		if (isToBeBlocked && user.getRole().equals(Role.ADMIN) && getActiveAdminsCount() <= 1) {
+		if ((isToBeBlocked && user.getRole().equals(Role.ADMIN) && getActiveAdminsCount() <= 1) || isUserPrimaryAdmin(user)) {
 
 			return new UserDto(user);
 		}
@@ -65,7 +65,8 @@ public class UsersService {
 	public PasswordDto changeUserPassword(Long id, PasswordDto passwordDto) {
 
 		User newUser = userUtils.fetchValidUser(id);
-		if (passwordEncoder.matches(passwordDto.getOldPassword(), newUser.getPassword())) {
+
+		if (passwordEncoder.matches(passwordDto.getOldPassword(), newUser.getPassword()) && !isUserPrimaryAdmin(newUser)) {
 
 			newUser.setPassword(passwordEncoder.encode(passwordDto.getPassword()));
 			userRepository.save(newUser);
@@ -73,6 +74,7 @@ public class UsersService {
 			return passwordDto;
 
 		} else {
+
 			return null;
 		}
 
@@ -84,8 +86,12 @@ public class UsersService {
 		password.setPassword(SurveysUtils.generateCode());
 
 		User newUser = userUtils.fetchValidUser(id);
-		newUser.setPassword(passwordEncoder.encode(password.getPassword()));
-		userRepository.save(newUser);
+
+		if (!isUserPrimaryAdmin(newUser)) {
+
+			newUser.setPassword(passwordEncoder.encode(password.getPassword()));
+			userRepository.save(newUser);
+		}
 
 		return password;
 	}
@@ -106,5 +112,10 @@ public class UsersService {
 		List<User> users = userRepository.findAll();
 
 		return users.stream().filter(user -> user.getRole().equals(Role.ADMIN) && !user.isBlocked()).count();
+	}
+
+	private boolean isUserPrimaryAdmin(User user) {
+
+		return user.getEmail().equals("admin@gmail.com");
 	}
 }
